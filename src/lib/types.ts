@@ -49,6 +49,8 @@ export interface CognitiveDistortion {
   name: string;
   description: string;
   indicator: string;
+  simpleName: string;
+  realLifeExample: string;
 }
 
 export interface ClarityReport {
@@ -58,6 +60,7 @@ export interface ClarityReport {
   primaryDistortion: CognitiveDistortion;
   criticPerception: string;
   objectiveReality: string;
+  realLifeExample: string;
   socraticQuestions: string[];
   groundingBreathingAnchor: string;
   generatedAt: number;

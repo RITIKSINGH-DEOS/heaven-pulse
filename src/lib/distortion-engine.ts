@@ -3,33 +3,43 @@ import { ClarityReport, CognitiveDistortion, InsecurityCategory } from './types'
 export const COGNITIVE_DISTORTIONS: Record<string, CognitiveDistortion> = {
   mind_reading: {
     id: 'mind_reading',
-    name: 'Mind-Reading Illusion',
-    description: 'Assuming others are judging or looking down on you without verifiable evidence.',
+    name: 'Mind-Reading Trap',
+    simpleName: 'Assuming Others Are Judging You',
+    description: 'You believe you know what people think about you, even when nobody said a word.',
     indicator: 'Assuming you know what people think about your worth.',
+    realLifeExample: 'Ever see a friend walk past without smiling? You might think "They hate me!", but in reality, they were just running late or stressed about an exam.',
   },
   catastrophizing: {
     id: 'catastrophizing',
-    name: 'Catastrophizing Lens',
-    description: 'Projecting that a single flaw, mistake, or setback will inevitably ruin your entire future.',
+    name: 'The Disaster Movie Trap',
+    simpleName: 'Expecting the Worst to Happen',
+    description: 'One small mistake makes you feel like your entire future is completely ruined.',
     indicator: 'Magnifying a moment of struggle into total life failure.',
+    realLifeExample: 'Failing one test or messing up one job interview makes you feel "I will never succeed in life", forgetting all the times you bounced back before.',
   },
   spotlight_effect: {
     id: 'spotlight_effect',
     name: 'The Spotlight Trap',
-    description: 'Overestimating how much other people notice or care about your physical appearance or minor flaws.',
+    simpleName: 'Feeling Everyone is Staring at You',
+    description: 'Believing that other people notice and judge your looks or flaws as intensely as you do.',
     indicator: 'Believing all eyes are hyper-focused on your imperfections.',
+    realLifeExample: 'You feel self-conscious about a bad haircut or your skin tone, thinking everyone is staring. But think about it: can you even remember what clothes or flaws the last 5 people you saw had? Everyone is busy thinking about themselves!',
   },
   all_or_nothing: {
     id: 'all_or_nothing',
-    name: 'Binary / All-or-Nothing Trap',
-    description: 'Viewing yourself as an absolute failure unless you perform with 100% perfection.',
+    name: 'All-or-Nothing Trap',
+    simpleName: 'Thinking You Must Be Perfect or You Are a Failure',
+    description: 'Believing that anything less than 100% perfection means you are a fraud or a loser.',
     indicator: 'Refusing to accept anything between pure victory and total worthlessness.',
+    realLifeExample: 'You score 85% instead of 95% and think "I know nothing". But even top doctors and senior software engineers google things every single day.',
   },
   emotional_reasoning: {
     id: 'emotional_reasoning',
-    name: 'Emotional Reasoning Fallacy',
-    description: 'Believing that because you feel inadequate, you must objectively be inadequate.',
+    name: 'Feeling vs Fact Trap',
+    simpleName: 'Treating a Bad Mood Like a Fact',
+    description: 'Believing that because you feel insecure or not good enough right now, it must actually be true.',
     indicator: 'Mistaking a temporary emotional wave for a permanent factual reality.',
+    realLifeExample: "When you are tired or hungry, you suddenly feel down or self-critical. But once you rest and eat, that feeling fades. The emotion was real, but it wasn't the factual truth.",
   },
 };
 
@@ -69,56 +79,57 @@ export function generateClarityReport(
 
   let criticPerception = `Your mind is currently telling you: "${rawThought}".`;
   let objectiveReality = '';
+  let realLifeExample = distortion.realLifeExample;
   const socraticQuestions: string[] = [];
 
   switch (distortion.id) {
     case 'mind_reading':
       objectiveReality = 
-        'Human psychology consistently shows that other people are deeply absorbed in their own insecurities and daily chaos. Distance, quietness, or distraction from peers almost always reflects their personal struggles, not a secret verdict on your worth.';
+        'Most people are so wrapped up in their own worries, deadlines, and insecurities that they rarely judge others the way we think. If someone looked distant or quiet, it is almost always about their day, not about you.';
       socraticQuestions.push(
-        'Has anyone explicitly stated this negative judgment to you, or is your anxious mind filling in the silence with fear?',
-        'If a close friend confided this exact same suspicion to you, would you tell them it is a guaranteed fact?'
+        'Did anyone actually tell you this to your face, or is your anxious mind filling the quietness with self-doubt?',
+        'If your best friend felt this exact same way, would you agree with their fear, or remind them how wonderful they are?'
       );
       break;
 
     case 'spotlight_effect':
       objectiveReality = 
-        'Cornell psychology research on the "Spotlight Effect" proves people notice less than 20% of what we assume they notice. What feels magnified to 1000% inside your consciousness is virtually invisible to the outside world.';
+        'Scientific studies show that people notice less than 20% of what we think they notice. What feels 100x bigger inside your head is practically invisible to the people around you.';
       socraticQuestions.push(
-        'Think of the people you saw today: how many of their minor flaws or outfits can you vividly recall?',
-        'Are you holding yourself to an impossible visual standard that you never impose on anyone else?'
+        'Think about today: can you recall even one flaw or awkward thing from the last 3 people you met?',
+        'Are you being 10 times harsher on yourself than you would ever be on anyone else?'
       );
       break;
 
     case 'catastrophizing':
       objectiveReality = 
-        'A setback or feeling of inadequacy today is a transient data point, not an immutable life trajectory. The most resilient individuals experience recurring episodes of self-doubt; surviving the feeling builds genuine mastery.';
+        'A bad day, a failed attempt, or an uncomfortable moment does not decide your entire life. Everyone you admire has failed repeatedly before finding their way.';
       socraticQuestions.push(
-        'What is the realistic, probable outcome here versus the absolute worst-case movie your mind is playing?',
-        'What is one small, gentle action you can take right now that does not require being perfect?'
+        'Is your brain playing out the absolute worst-case scenario, or is this something you can actually recover from?',
+        'Think back 2 years ago: how many things you worried were the "end of the world" are completely irrelevant today?'
       );
       break;
 
     case 'all_or_nothing':
       objectiveReality = 
-        'Competence and self-worth exist on a wide spectrum, not a binary toggle. Experiencing impostor syndrome is often the clearest evidence that you are challenging yourself at the frontiers of your growth.';
+        'You do not have to be the best in the room to belong there. Feeling like an impostor usually just means you are challenging yourself and learning something new.';
       socraticQuestions.push(
-        'Can someone make mistakes, feel imperfect, and still be deeply valuable and capable?',
-        'What hard evidence exists of obstacles you have already navigated to get to this point?'
+        'Can you make mistakes and still be smart, capable, and worthy of respect?',
+        'If a classmate asked you for help right now, would you realize you actually know more than you give yourself credit for?'
       );
       break;
 
     default:
       objectiveReality = 
-        'A feeling is a physiological brain event, not a factual truth. Just because your nervous system is sounding an alarm bell of unworthiness does not mean there is actual danger or truth to the thought.';
+        'A feeling is just a wave of emotion in your body, not a factual truth. Just because your brain feels overwhelmed right now does not mean you are less worthy or incapable.';
       socraticQuestions.push(
-        'Can you observe this heavy feeling as an emotional wave passing through you, without signing your name to it as the absolute truth?'
+        'Can you let this uncomfortable feeling pass like a passing cloud, without believing it is a fact about who you are?'
       );
       break;
   }
 
   if (chatContextSummary) {
-    objectiveReality += ` Connecting with an anonymous peer verified this universal human vulnerability: you are fighting a battle shared by countless others.`;
+    objectiveReality += ` Talking with an anonymous peer showed: other students carry the exact same doubts. You are never alone in this.`;
   }
 
   return {
@@ -128,6 +139,7 @@ export function generateClarityReport(
     primaryDistortion: distortion,
     criticPerception,
     objectiveReality,
+    realLifeExample,
     socraticQuestions,
     groundingBreathingAnchor: 'Inhale calm for 4s • Hold stillness for 4s • Exhale tension for 6s',
     generatedAt: Date.now(),
