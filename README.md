@@ -21,8 +21,8 @@
 - [Core Product Walkthrough](#-core-product-walkthrough)
   - [1. The Sanctuary Intake](#1-the-sanctuary-intake)
   - [2. The Live Peer Resonance Hub](#2-the-live-peer-resonance-hub)
-  - [3. The 5-Minute Ephemeral Empathy Bridge](#3-the-5-minute-ephemeral-empathy-bridge)
-  - [4. The Clarity Mirror & Release Ritual](#4-the-clarity-mirror--release-ritual)
+  - [3. The 5-Minute Ephemeral Empathy Bridge & Auto-Pairing Chamber](#3-the-5-minute-ephemeral-empathy-bridge--auto-pairing-chamber)
+  - [4. The Clarity Mirror & 5-Second Release Ritual](#4-the-clarity-mirror--5-second-release-ritual)
 - [Privacy & Security Air-Gap](#-privacy--zero-knowledge-security-architecture)
 - [Local Quickstart & Verification](#-local-quickstart--verification)
 - [Automated Test Suite](#-automated-test-suite)
@@ -61,11 +61,11 @@ HeavenPulse dismantles both layers simultaneously:
 
 | Evaluation Vector | Commercial AI Chatbots (ChatGPT, Wysa) | Public Anonymous Forums (Reddit, Discord) | HeavenPulse Sanctuary |
 | :--- | :--- | :--- | :--- |
-| **Authentic Human Connection** | ❌ **Zero.** Talking to an AI bot exacerbates felt loneliness. | ⚠️ **Unpredictable.** High risk of harassment or being ignored. | ✅ **100% Real Peers.** Verified live online peers with mutual empathy. |
+| **Authentic Human Connection** | ❌ **Zero.** Talking to an AI bot exacerbates felt loneliness. | ⚠️ **Unpredictable.** High risk of harassment or being ignored. | ✅ **100% Real Peers.** Live auto-pairing room (`/api/room`) with dual-role dynamics + solo fallback. |
 | **User Privacy & Identity** | ❌ Requires email/account, chat histories saved on corporate servers. | ❌ User profiles, public post history, risk of doxxing. | ✅ **Zero-Knowledge.** No login, no accounts, in-memory ephemeral sessions. |
-| **Psychological Safety** | ⚠️ Generic platitudes ("Have a cup of tea and breathe"). | ❌ Zero clinical structure; unmoderated trauma-dumping. | ✅ **Deterministic Safety Air-Gap.** Immediate 988 lifeline integration + CBT deconstruction. |
+| **Psychological Safety** | ⚠️ Generic platitudes ("Have a cup of tea and breathe"). | ❌ Zero clinical structure; unmoderated trauma-dumping. | ✅ **Deterministic Safety Air-Gap.** Immediate 988 lifeline integration + relatable CBT reframing. |
 | **Communication Abuse Shield** | N/A | ❌ DMs, unsolicited advice, trolling, stalking. | ✅ **Toxicity Firewall.** Real-time PII & phone/handle redaction; time-bounded 5-min sessions. |
-| **Closure & Relief** | ❌ Open-ended chat loops without resolution. | ❌ Lingering comment notifications keeping anxiety alive. | ✅ **The Release Ritual.** Interactive burn ritual purges thought from memory. |
+| **Closure & Relief** | ❌ Open-ended chat loops without resolution. | ❌ Lingering comment notifications keeping anxiety alive. | ✅ **5s Celestial Release Ritual.** Interactive particle dissolution purges thought with tailored quote anchor. |
 
 ---
 
@@ -73,19 +73,20 @@ HeavenPulse dismantles both layers simultaneously:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   CLIENT VIEWPORT (Next.js 15)                          │
+│                                   CLIENT VIEWPORT (Next.js 16)                          │
 │                                                                                         │
 │  [Screen 1: Sanctuary Intake]   [Screen 2: Resonance Hub]   [Screen 3: Empathy Bridge] │
-│  - Zero-Auth State Generator    - Live 🟢 Online Status     - 5-Min Soft Countdown      │
-│  - Category Domain Selector     - Community Telemetry Bar   - PII Redaction Filter      │
-│  - Real-Time Crisis Air-Gap     - Direct Solo Mirror Bypass - Empathy Quick Drops       │
-│                                              │                                          │
+│  - Zero-Auth State Generator    - Live 🟢 Online Status     - Real-Time /api/room Sync  │
+│  - Category Domain Selector     - Community Telemetry Bar   - Dual-Role Theming Engine  │
+│  - Real-Time Crisis Air-Gap     - Direct Solo Mirror Bypass - 5-Min Timer & PII Filter  │
+│                                              │              - Viewport Scroll Guard     │
 │                                              ▼                                          │
 │                               [Screen 4: The Clarity Mirror]                            │
-│                               - Cognitive Distortion Triage (CBT Rules)                 │
-│                               - Socratic Reality Anchor Synthesis                       │
+│                               - Cognitive Distortion Triage (Relatable CBT Rules)       │
+│                               - Dual-Column Socratic Reality Anchors                    │
 │                               - Interactive 4-4-6 Grounding Breath Pacer                │
-│                               - "Release & Burn" Ephemeral Purge Ritual                 │
+│                               - 5s Celestial Particle Release & Dissolution Ritual      │
+│                               - Zen Burden Purged Card with Tailored Perspective Quote  │
 └──────────────────────────────────────────────┬──────────────────────────────────────────┘
                                                │
                                  [Deterministic Safety Air-Gap]
@@ -96,7 +97,7 @@ HeavenPulse dismantles both layers simultaneously:
          [CRITICAL DISTRESS DETECTED]                       [SAFE VULNERABILITY]
          - Immediate 988 Lifeline Trigger                   - In-Memory Ephemeral Store
          - Crisis Text Line Directive (741741)              - Zero Database Writes
-         - UI Safety Override                               - Client State Transition
+         - UI Safety Override                               - Real-Time Auto-Pairing Match
 ```
 
 ---
@@ -104,31 +105,49 @@ HeavenPulse dismantles both layers simultaneously:
 ## 🖥️ Core Product Walkthrough
 
 ### 1. The Sanctuary Intake
-- **Distraction-Free Zen Canvas:** Deep obsidian black palette (`#000000`) with a 3D animated particle wave mesh and ambient spotlight cone.
-- **Domain Selection:** Categorizes vulnerability into 4 clinical archetypes:
-  - 🧠 *Impostor & Career*
-  - 🪞 *Body & Self-Image*
-  - 👥 *Social Inadequacy*
-  - 💔 *Belonging & Loneliness*
-- **Deterministic Crisis Filter:** Scans input for acute self-harm indicators before any processing, instantly surfacing the National 988 Lifeline.
+- **Distraction-Free Zen Canvas:** Deep obsidian black palette (`#000000`) with a dynamic 3D animated particle wave mesh, floating stardust embers, and responsive ambient spotlight glow.
+- **Relatable Vulnerability Domains:** Four clinically grounded yet accessible archetypes designed to normalize student challenges:
+  - 🧠 *Impostor & Career* — Fear of being exposed as unqualified or failing high expectations.
+  - 🪞 *Body & Self-Image* — Physical appearance fixation and hyper-critical self-scrutiny.
+  - 👥 *Social Inadequacy* — Fear of awkwardness, saying the wrong thing, or social exclusion.
+  - 💔 *Belonging & Loneliness* — The painful weight of feeling isolated or misunderstood.
+- **Deterministic Crisis Safety Air-Gap:** Client-side regex evaluation scanning input for acute self-harm indicators before any processing, instantly surfacing the National 988 Lifeline without recording or storing user data.
 
 ### 2. The Live Peer Resonance Hub
-- **Telemetry Counter:** Demonstrates community solidarity (*"420+ anonymous members processed this exact domain this week"*).
-- **Live Peer Cards Grid:** Displays vetted peer struggles with 🟢 **Online Now** glowing pulse indicators and distilled perspective gifts.
-- **Direct Solo Bypass:** Introvert-friendly shortcut allowing users who prefer quiet contemplation to skip chat and proceed directly to The Clarity Mirror.
+- **Community Telemetry Bar:** Displays real-time category resonance counts (*"420+ anonymous members processed this exact domain this week"*), dispelling the illusion of solitary struggle.
+- **Live Peer Resonance Grid:** Showcases community perspectives with 🟢 **Online Now** glowing pulse indicators and distilled perspective gifts.
+- **Dual-Role Entry Flexibility:**
+  - *CalmSeeker*: Share personal struggles and find compassionate peer validation.
+  - *StarlitFern*: Volunteer as an anonymous active listener to support fellow peers in need.
+- **Direct Solo Mirror Bypass:** Introvert-friendly shortcut allowing users who prefer private contemplation to bypass peer chat and proceed directly to The Clarity Mirror.
 
-### 3. The 5-Minute Ephemeral Empathy Bridge
-- **Anonymous Aliases:** Assigns gentle, nature-inspired pseudonyms (e.g., *You: CalmSeeker*, *Peer: QuietPine*).
-- **Focused 5:00 Timer:** Time-bounded conversation prevents cyclical rumination or trauma-dumping.
-- **Toxicity & PII Firewall:** Automatically intercepts and redacts phone numbers, email addresses, and social handles (`@instagram`, `whatsapp`, etc.).
-- **Empathy Quick Drops:** One-click supportive affirmations (🫂 *Shared Burden*, 🕯️ *Sending Strength*).
+### 3. The 5-Minute Ephemeral Empathy Bridge & Auto-Pairing Chamber
+- **Real-Time Cross-Tab Auto-Pairing Room (`/api/room`):**
+  - Instantaneous peer matching connects a CalmSeeker with an active StarlitFern volunteer listener sharing the same category domain.
+  - Fully synchronized stateful messaging over ephemeral memory with zero database dependency.
+- **Zero-Empty-State Solo AI Fallback:** If no human peer is immediately active, the chamber seamlessly pairs with an empathetic resonance reflection agent so no user is ever left stranded.
+- **Dual-Role Dynamic Theming & Persona Isolation:**
+  - **CalmSeeker (Seeker):** Calming Emerald Green theme (`#34d399`) tailored for safe emotional vulnerability.
+  - **StarlitFern (Listener):** Deep Indigo / Violet theme (`#818cf8`) equipped with guided listening suggestions and empathetic prompts.
+- **Viewport-Isolated Smooth Auto-Scroll:** Chat messages auto-scroll smoothly inside the message viewport without jerking the entire window or disrupting user context.
+- **Focused 5:00 Soft Countdown:** Time-bounded conversation boundaries prevent emotional fatigue, trauma-dumping, and endless cyclical rumination.
+- **Real-Time Toxicity & PII Firewall:** Deterministic sanitizers redact phone numbers, emails, and social handles (`@instagram`, `whatsapp`, etc.) live in-flight.
+- **Empathy Quick Drops:** One-tap structured warmth reactions (🫂 *Shared Burden*, 🕯️ *Sending Strength*, 🌊 *Holding Space*).
 
-### 4. The Clarity Mirror & Release Ritual
-- **Distortion Classification:** Accurately diagnoses whether the thought stems from *Mind-Reading, Catastrophizing, Spotlight Trap, or All-or-Nothing thinking*.
-- **The Dual-Column Contrast:** Side-by-side comparison contrasting the *Critic's Illusion* against the *Objective Reality Anchor*.
-- **Socratic Reflection Prompts:** Evidence-based philosophical challenges to dismantle the negative cognitive loop.
-- **4-4-6 Grounding Breath Pacer:** Interactive visual orb pacing Inhale (4s), Hold (4s), and Exhale (6s) for vagal nerve calming.
-- **The "Release & Burn" Ritual:** An interactive action where the thought is permanently purged from browser memory, dissolving into light with zero server logs.
+### 4. The Clarity Mirror & 5-Second Release Ritual
+- **De-Jargonized Cognitive Reframing:** Automatically categorizes the underlying distortion using clear, human-accessible language instead of dense psychiatric jargon:
+  - *Mind-Reading:* Assuming you know what others negatively think of you without proof.
+  - *The Spotlight Trap:* Feeling like every minor flaw is glaringly obvious to everyone else.
+  - *Catastrophizing:* Jumping straight to the absolute worst-case scenario.
+  - *All-or-Nothing Fallacy:* Viewing situations as total success or complete failure.
+- **Dual-Column Contrast & Socratic Anchors:** Side-by-side visualization contrasting the emotional distortion against empirical reality, complemented by structured Socratic reflection prompts.
+- **Interactive 4-4-6 Grounding Breath Pacer:** Guided visual orb rhythmically pacing Inhale (4s), Hold (4s), and Exhale (6s) for vagal nerve soothing and physiological reset.
+- **5-Second Celestial Particle Dissolution Ritual:**
+  - Interactive full-canvas physics simulation with 120+ ascending glowing stardust particles (`#a7f3d0` / `#6ee7b7`) that drift upward and dissolve into pure light.
+  - Synchronized breathing progress line indicator providing a soothing, complete 5-second meditative release.
+- **Zen "Burden Purged" Card with Personalized Positive Quote Anchor:**
+  - Upon release completion, a tranquil Zen card confirms the thought has been permanently purged from browser memory.
+  - Features an **issue-tailored positive perspective quote anchor** uniquely matched to the user's category (e.g., Carl Sagan, Marcus Aurelius, Brené Brown, Epictetus) to leave the user with lasting resilience and peace.
 
 ---
 
