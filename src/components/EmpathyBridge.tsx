@@ -210,7 +210,7 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
         </div>
 
         {/* Message Feed */}
-        <div className="flex-1 overflow-y-auto py-4 space-y-3.5 pr-2">
+        <div className="flex-1 overflow-y-auto no-scrollbar py-4 space-y-3.5 pr-1">
           {messages.map((msg) => {
             if (msg.sender === 'system') {
               return (
@@ -261,8 +261,8 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
           </div>
         )}
 
-        {/* Empathy Quick Drops Carousel */}
-        <div className="py-2 flex items-center gap-2 overflow-x-auto no-scrollbar border-t border-white/[0.06] mb-2">
+        {/* Empathy Quick Drops Horizontal Scroll Bar */}
+        <div className="py-2.5 flex items-center gap-2 overflow-x-auto border-t border-white/[0.06] mb-2 select-none scroll-smooth">
           <span className="text-[10px] font-mono uppercase text-neutral-500 shrink-0">
             Quick Drops:
           </span>
@@ -271,7 +271,7 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
               key={idx}
               type="button"
               onClick={() => handleSendMessage(drop)}
-              className="text-[11px] px-2.5 py-1 rounded-full bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-white/10 whitespace-nowrap transition-colors shrink-0 cursor-pointer"
+              className="text-[11px] px-3 py-1.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-white/10 whitespace-nowrap transition-colors shrink-0 cursor-pointer shadow-sm"
             >
               {drop}
             </button>
