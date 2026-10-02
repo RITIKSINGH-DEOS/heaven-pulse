@@ -147,13 +147,16 @@ export default function Home() {
       </main>
 
       {/* Atmospheric Minimalist Footer */}
-      <footer className="relative z-10 border-t border-white/[0.08] py-6 px-4 text-center text-xs text-neutral-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div>
-            HeavenPulse • 100% Free Non-Profit Public Good for Student & Youth Mental Wellness
+      <footer className="relative z-10 border-t border-white/[0.08] py-8 px-4 text-center">
+        <div className="max-w-xl mx-auto flex flex-col items-center justify-center gap-3">
+          <div className="inline-flex items-center gap-1.5 text-neutral-200 font-mono text-xs sm:text-sm">
+            <span>Made with</span>
+            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
+            <span>by</span>
+            <span className="text-white font-medium">Ritik Singh</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-4 text-neutral-500 font-mono text-[11px]">
-            <span>Client-Side Ephemeral Memory</span>
+          <div className="flex items-center justify-center gap-3 text-neutral-500 font-mono text-[11px]">
+            <span>HeavenPulse</span>
             <span>•</span>
             <a 
               href="https://github.com/RITIKSINGH-DEOS/heaven-pulse"
@@ -165,10 +168,6 @@ export default function Home() {
             </a>
             <span>•</span>
             <span>WarriorHacks 2.0</span>
-            <span>•</span>
-            <span className="inline-flex items-center gap-1.5 text-neutral-300">
-              Made with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" /> by <span className="text-white font-medium">Ritik Singh</span>
-            </span>
           </div>
         </div>
       </footer>
