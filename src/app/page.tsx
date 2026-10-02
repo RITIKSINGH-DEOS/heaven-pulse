@@ -72,10 +72,10 @@ export default function Home() {
   return (
     <div className="relative min-h-screen bg-black bg-matrix-dots text-neutral-100 flex flex-col justify-between selection:bg-neutral-800 selection:text-white">
       
-      {/* Top Center Spotlight Cone (from Reference Images) */}
+      {/* Top Ambient Spotlight Lighting */}
       <div className="spotlight-top" />
 
-      {/* 3D Flowing Particle Mesh & Embers (from Reference Image 2) */}
+      {/* 3D Flowing Particle Wave Canvas */}
       <ParticleWaveBackground />
 
       {/* Persistent Global Header */}

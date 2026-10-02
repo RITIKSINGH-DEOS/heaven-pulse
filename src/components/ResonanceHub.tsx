@@ -35,7 +35,7 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
         <span>Return to Sanctuary</span>
       </button>
 
-      {/* Top Banner (Reference Image 1 Hero Style) */}
+      {/* Telemetry Status Banner */}
       <div className="card-spotlight p-6 sm:p-8 mb-8 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
@@ -102,7 +102,7 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
         </div>
       </div>
 
-      {/* Peer Cards Grid (Exact matching Reference Image 1 & 4 cards) */}
+      {/* Peer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {peers.map((peer) => (
           <div

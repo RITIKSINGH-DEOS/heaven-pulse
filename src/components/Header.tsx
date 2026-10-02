@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
       <header className="relative z-30 w-full border-b border-white/[0.08] bg-black/90 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           
-          {/* Logo (Exact match to Reference Image 3: Icon + Title) */}
+          {/* Brand Logo */}
           <div 
             onClick={onReset}
             className="flex items-center gap-3 cursor-pointer group select-none"
@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
             </div>
           </div>
 
-          {/* Center Navigation Links (Matching Image 3) */}
+          {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-7 text-xs text-neutral-400">
             <span className="hover:text-white transition-colors cursor-pointer">
               Overview
@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
             </span>
           </nav>
 
-          {/* Right Action Cluster (Matching Image 3: Star Us, 988, Green CTA) */}
+          {/* Action Controls */}
           <div className="flex items-center gap-4 text-xs">
             
             {/* GitHub Star Us link */}
@@ -74,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
               <span>988 Help</span>
             </button>
 
-            {/* Green CTA Pill Button (Exact match to "Get Started" in Image 3) */}
+            {/* Start Session CTA */}
             <button
               onClick={onReset}
               className="px-3.5 py-1.5 rounded-md bg-[#1e4b38] hover:bg-[#059669] text-[#34d399] hover:text-white border border-[#059669] font-medium text-xs transition-all shadow-sm cursor-pointer"

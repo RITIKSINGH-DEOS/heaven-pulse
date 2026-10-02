@@ -59,7 +59,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
   return (
     <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-8 sm:py-14 animate-fade-in">
       
-      {/* 1. Hero Title Section (Exact match to Reference Image 1 & 3) */}
+      {/* Hero Title Section */}
       <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
         <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white mb-5 leading-[1.12]">
           Deconstructing Insecurity, <br />
@@ -71,7 +71,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
         </p>
       </div>
 
-      {/* 2. Main Centerpiece Card (Exact match to Reference Image 1 & 3 UI Container) */}
+      {/* Main Centerpiece Card */}
       <div className="card-spotlight p-6 sm:p-9 mb-16 relative overflow-hidden">
         
         {/* Subtle Card Header */}
@@ -90,7 +90,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
           </span>
         </div>
 
-        {/* Step 1: Category Selection Grid (Matching Image 1 Quick-Start Tiles) */}
+        {/* Domain Selection Grid */}
         <div className="mb-6">
           <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
             Select Domain of Vulnerability
@@ -178,7 +178,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
               Solo Clarity Mirror
             </button>
 
-            {/* Main Action (Matching Image 5 "Try For Free →" style) */}
+            {/* Peer Connection CTA */}
             <button
               type="button"
               disabled={!rawThought.trim()}
@@ -193,7 +193,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
 
       </div>
 
-      {/* 3. "Why Choose HeavenPulse" Feature Grid (Exact match to Reference Image 2: 6 Cards with Circle Badges) */}
+      {/* Feature Grid */}
       <div className="pt-6">
         
         <div className="text-center max-w-xl mx-auto mb-10">

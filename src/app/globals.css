@@ -13,7 +13,7 @@ body {
   min-height: 100vh;
 }
 
-/* 1. Exact Center-Top Spotlight Cone (from Reference Images 1, 4, 5) */
+/* Ambient Center-Top Spotlight Lighting */
 .spotlight-top {
   position: absolute;
   top: 0;
@@ -26,13 +26,13 @@ body {
   z-index: 1;
 }
 
-/* 2. Micro Dot-Wave Textured Matrix (from Reference Images) */
+/* Micro Dot-Wave Textured Matrix */
 .bg-matrix-dots {
   background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-/* 3. Exact Card Style from Reference Images (Top metallic reflection sheen) */
+/* Card Container with Top Metallic Sheen */
 .card-spotlight {
   background: #0d0d10;
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -50,7 +50,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* 4. Circular Icon Container (Exact match to Reference Image 2) */
+/* Circular Icon Container */
 .icon-badge-circle {
   width: 44px;
   height: 44px;
@@ -64,7 +64,7 @@ body {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-/* 5. Clean Input Box with Metallic Border */
+/* Input Element with Metallic Highlight */
 .input-spotlight {
   background: #08080a;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -80,7 +80,7 @@ body {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15), 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
-/* 6. Exact CTA Button from Reference Image 3 & 5 */
+/* Action CTA Button */
 .btn-emerald-cta {
   background-color: #1e4b38;
   color: #34d399;

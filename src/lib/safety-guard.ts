@@ -2,7 +2,7 @@ import { SafetyCheckResult } from './types';
 
 /**
  * Deterministic crisis keywords and severe distress phrases.
- * Safety air-gap executes with zero latency before any AI processing.
+ * Safety air-gap executes with zero latency before any cognitive processing.
  */
 const CRISIS_PATTERNS = [
   /\b(kill myself|want to die|commit suicide|end my life|take my life|suicidal)\b/i,
