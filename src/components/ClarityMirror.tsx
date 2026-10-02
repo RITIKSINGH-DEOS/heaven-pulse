@@ -1,17 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ClarityReport } from '../lib/types';
 import { 
   Sparkles, 
   BrainCircuit, 
-  CheckCircle2, 
   Flame, 
   RotateCcw, 
   Wind, 
   HelpCircle,
   ShieldCheck,
-  Lock,
   ArrowRight,
   ArrowLeft
 } from 'lucide-react';
@@ -21,10 +19,157 @@ interface ClarityMirrorProps {
   onReset: () => void;
 }
 
+interface EmberParticle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  alpha: number;
+  decay: number;
+  hue: number;
+}
+
+// Soothing, Meditative Release Particle Transition
+const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  const [phaseText, setPhaseText] = useState('Igniting & dissolving the mind trap...');
+  const [phaseIcon, setPhaseIcon] = useState<'flame' | 'stars' | 'peace'>('flame');
+
+  useEffect(() => {
+    // Sequential meditative phase text
+    const t1 = setTimeout(() => {
+      setPhaseText('Dissolving thought into weightless stardust...');
+      setPhaseIcon('stars');
+    }, 700);
+
+    const t2 = setTimeout(() => {
+      setPhaseText('Purged from memory. Breathe in stillness...');
+      setPhaseIcon('peace');
+    }, 1500);
+
+    const t3 = setTimeout(() => {
+      if (onCompleteRef.current) {
+        onCompleteRef.current();
+      }
+    }, 2200);
+
+    // Canvas particle engine
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+    const width = (canvas.width = canvas.parentElement?.clientWidth || 500);
+    const height = (canvas.height = canvas.parentElement?.clientHeight || 420);
+
+    const particles: EmberParticle[] = [];
+    const particleCount = 70;
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: width / 2 + (Math.random() - 0.5) * (width * 0.75),
+        y: height * 0.7 + Math.random() * (height * 0.28),
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: -1.2 - Math.random() * 2.2,
+        size: Math.random() * 3.5 + 1.5,
+        alpha: Math.random() * 0.8 + 0.2,
+        decay: Math.random() * 0.007 + 0.003,
+        hue: Math.random() > 0.4 ? 40 : 155,
+      });
+    }
+
+    const startTime = Date.now();
+
+    const render = () => {
+      const elapsed = Date.now() - startTime;
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.x += p.vx + Math.sin(p.y * 0.03) * 0.5;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+
+        if (elapsed > 700 && p.hue === 40) {
+          p.hue = 155;
+        }
+
+        if (p.alpha > 0) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.hue === 40 
+            ? `rgba(251, 191, 36, ${p.alpha})` 
+            : `rgba(52, 211, 153, ${p.alpha})`;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.hue === 40 ? '#f59e0b' : '#34d399';
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      cancelAnimationFrame(animId);
+    };
+  }, []); // Run ONCE on mount to prevent timer resets
+
+  return (
+    <div 
+      onClick={() => onCompleteRef.current?.()}
+      title="Click to proceed immediately"
+      className="card-spotlight p-8 sm:p-14 text-center max-w-lg mx-auto min-h-[420px] flex flex-col items-center justify-center relative overflow-hidden animate-fade-in border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.85)] cursor-pointer"
+    >
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0 pointer-events-none z-10 w-full h-full"
+      />
+
+      {/* Central Pulsing Halo of Release */}
+      <div className="relative z-20 flex flex-col items-center">
+        <div className="relative mb-6">
+          {/* Outer Breathing Aura */}
+          <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-400/30 animate-pulse-halo flex items-center justify-center">
+            {/* Inner Glow Core */}
+            <div className="w-16 h-16 rounded-full bg-neutral-900 border border-emerald-500/50 flex items-center justify-center shadow-[0_0_30px_rgba(52,211,153,0.35)]">
+              {phaseIcon === 'flame' && <Flame className="w-8 h-8 text-amber-400 animate-pulse" />}
+              {phaseIcon === 'stars' && <Sparkles className="w-8 h-8 text-emerald-400 animate-spin-slow" />}
+              {phaseIcon === 'peace' && <Wind className="w-8 h-8 text-cyan-400 animate-pulse" />}
+            </div>
+          </div>
+        </div>
+
+        {/* Meditative Reassuring Phase Text */}
+        <h3 className="text-lg sm:text-xl font-semibold text-white tracking-wide mb-2 transition-all duration-500">
+          {phaseText}
+        </h3>
+
+        <p className="text-xs text-neutral-400 font-mono tracking-wider uppercase mb-3">
+          Zero-Trace Cleanse in Progress
+        </p>
+
+        <span className="text-[10px] text-neutral-500 hover:text-neutral-400 transition-colors">
+          Click anywhere to skip
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset }) => {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
-  const [isBurned, setIsBurned] = useState(false);
-  const [isBurningAnimation, setIsBurningAnimation] = useState(false);
+  const [burnState, setBurnState] = useState<'idle' | 'releasing' | 'purged'>('idle');
   const [breathPhase, setBreathPhase] = useState<'Inhale' | 'Hold' | 'Exhale'>('Inhale');
   const [breathTimer, setBreathTimer] = useState(4);
 
@@ -52,19 +197,14 @@ export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset })
   }, [breathPhase]);
 
   const handleBurn = () => {
-    setIsBurningAnimation(true);
-    setTimeout(() => {
-      setIsBurningAnimation(false);
-      setIsBurned(true);
-    }, 1200);
+    setBurnState('releasing');
   };
 
   return (
-    <div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-8 sm:py-12 animate-fade-in">
+    <div className="relative z-10 w-full max-w-2xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
       
-      {!isBurned ? (
-        <div className={`transition-all duration-700 ${isBurningAnimation ? 'opacity-0 scale-95 filter blur-lg' : 'opacity-100 scale-100'}`}>
-          
+      {burnState === 'idle' && (
+        <div>
           {/* Top Progress Indicator */}
           <div className="flex items-center justify-between mb-8 max-w-md mx-auto">
             {[
@@ -253,7 +393,7 @@ export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset })
                 <button
                   type="button"
                   onClick={handleBurn}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium text-xs transition-all cursor-pointer shadow-md shadow-red-950/50"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium text-xs transition-all cursor-pointer shadow-md shadow-red-950/50 hover:scale-[1.02]"
                 >
                   <Flame className="w-4 h-4 text-amber-300" />
                   <span>Burn & Release Burden</span>
@@ -261,32 +401,44 @@ export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset })
               </div>
             </div>
           )}
-
         </div>
-      ) : (
-        /* State B: Post-Release Zen Confirmation */
-        <div className="card-spotlight p-8 sm:p-12 text-center max-w-lg mx-auto animate-fade-in">
-          <div className="w-14 h-14 rounded-full bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-5 shadow-[0_0_24px_rgba(52,211,153,0.3)]">
-            <Sparkles className="w-7 h-7" />
+      )}
+
+      {/* Releasing Animation Phase */}
+      {burnState === 'releasing' && (
+        <SoothingReleaseAnimation onComplete={() => setBurnState('purged')} />
+      )}
+
+      {/* State B: Post-Release Zen Confirmation (Exact match with user requested design) */}
+      {burnState === 'purged' && (
+        <div className="card-spotlight p-8 sm:p-12 text-center max-w-lg mx-auto animate-zen-reveal relative overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.85)]">
+          
+          {/* Ambient soft glow at top */}
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-32 bg-emerald-500/15 blur-3xl pointer-events-none rounded-full" />
+
+          {/* Glowing Celestial Sparkle Emblem */}
+          <div className="w-16 h-16 rounded-full bg-emerald-950/50 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto mb-6 shadow-[0_0_28px_rgba(52,211,153,0.35)] relative">
+            <span className="absolute inset-0 rounded-full border border-emerald-400/25 animate-ping opacity-25" />
+            <Sparkles className="w-8 h-8 text-emerald-400" />
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 tracking-tight">
             Your burden has been released.
           </h2>
 
-          <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed mb-6">
+          <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-md mx-auto mb-7">
             This thought has been purged from your device&apos;s memory. No traces exist anywhere. Walk forward with clarity.
           </p>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-xs font-mono text-emerald-400 mb-6">
-            <ShieldCheck className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-emerald-500/25 text-xs font-mono text-emerald-400 mb-7 shadow-inner">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>Memory Purged • 100% Private</span>
           </div>
 
           <div>
             <button
               onClick={onReset}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-medium text-xs border border-white/10 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-medium text-xs sm:text-sm border border-white/10 hover:border-white/20 transition-all cursor-pointer shadow-md hover:scale-[1.02]"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Start Fresh Session</span>
@@ -298,4 +450,3 @@ export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset })
     </div>
   );
 };
-
