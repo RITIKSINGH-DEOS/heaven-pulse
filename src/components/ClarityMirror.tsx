@@ -37,25 +37,28 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
   onCompleteRef.current = onComplete;
 
   const [phaseText, setPhaseText] = useState('Igniting & dissolving the mind trap...');
+  const [phaseSubText, setPhaseSubText] = useState('Watching cognitive loops turn into quiet ash...');
   const [phaseIcon, setPhaseIcon] = useState<'flame' | 'stars' | 'peace'>('flame');
 
   useEffect(() => {
-    // Sequential meditative phase text
+    // Sequential meditative phase text spread over 5 seconds
     const t1 = setTimeout(() => {
       setPhaseText('Dissolving thought into weightless stardust...');
+      setPhaseSubText('Releasing physical and emotional tension from your body...');
       setPhaseIcon('stars');
-    }, 700);
+    }, 1600);
 
     const t2 = setTimeout(() => {
       setPhaseText('Purged from memory. Breathe in stillness...');
+      setPhaseSubText('Zero logs remain anywhere. Walk forward into clarity...');
       setPhaseIcon('peace');
-    }, 1500);
+    }, 3400);
 
     const t3 = setTimeout(() => {
       if (onCompleteRef.current) {
         onCompleteRef.current();
       }
-    }, 2200);
+    }, 5000);
 
     // Canvas particle engine
     const canvas = canvasRef.current;
@@ -68,17 +71,17 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
     const height = (canvas.height = canvas.parentElement?.clientHeight || 420);
 
     const particles: EmberParticle[] = [];
-    const particleCount = 70;
+    const particleCount = 85;
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
-        x: width / 2 + (Math.random() - 0.5) * (width * 0.75),
+        x: width / 2 + (Math.random() - 0.5) * (width * 0.8),
         y: height * 0.7 + Math.random() * (height * 0.28),
         vx: (Math.random() - 0.5) * 1.5,
-        vy: -1.2 - Math.random() * 2.2,
+        vy: -1.0 - Math.random() * 2.0,
         size: Math.random() * 3.5 + 1.5,
         alpha: Math.random() * 0.8 + 0.2,
-        decay: Math.random() * 0.007 + 0.003,
+        decay: Math.random() * 0.005 + 0.003,
         hue: Math.random() > 0.4 ? 40 : 155,
       });
     }
@@ -90,12 +93,21 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
       ctx.clearRect(0, 0, width, height);
 
       particles.forEach((p) => {
-        p.x += p.vx + Math.sin(p.y * 0.03) * 0.5;
+        p.x += p.vx + Math.sin(p.y * 0.03) * 0.45;
         p.y += p.vy;
         p.alpha -= p.decay;
 
-        if (elapsed > 700 && p.hue === 40) {
+        // Shift color gradually from warm amber to tranquil emerald
+        if (elapsed > 1600 && p.hue === 40 && Math.random() < 0.1) {
           p.hue = 155;
+        }
+
+        // Respawn particles from bottom during the first 4.2 seconds
+        if (p.alpha <= 0 && elapsed < 4200) {
+          p.x = width / 2 + (Math.random() - 0.5) * (width * 0.75);
+          p.y = height * 0.75 + Math.random() * (height * 0.2);
+          p.alpha = Math.random() * 0.7 + 0.3;
+          p.hue = elapsed > 2400 ? 155 : (Math.random() > 0.5 ? 40 : 155);
         }
 
         if (p.alpha > 0) {
@@ -129,7 +141,7 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
     <div 
       onClick={() => onCompleteRef.current?.()}
       title="Click to proceed immediately"
-      className="card-spotlight p-8 sm:p-14 text-center max-w-lg mx-auto min-h-[420px] flex flex-col items-center justify-center relative overflow-hidden animate-fade-in border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.85)] cursor-pointer"
+      className="card-spotlight p-8 sm:p-14 text-center max-w-lg mx-auto min-h-[440px] flex flex-col items-center justify-center relative overflow-hidden animate-fade-in border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.85)] cursor-pointer"
     >
       <canvas 
         ref={canvasRef} 
@@ -137,7 +149,7 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
       />
 
       {/* Central Pulsing Halo of Release */}
-      <div className="relative z-20 flex flex-col items-center">
+      <div className="relative z-20 flex flex-col items-center max-w-sm">
         <div className="relative mb-6">
           {/* Outer Breathing Aura */}
           <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-400/30 animate-pulse-halo flex items-center justify-center">
@@ -151,15 +163,20 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
         </div>
 
         {/* Meditative Reassuring Phase Text */}
-        <h3 className="text-lg sm:text-xl font-semibold text-white tracking-wide mb-2 transition-all duration-500">
+        <h3 className="text-lg sm:text-xl font-semibold text-white tracking-wide mb-1.5 transition-all duration-700">
           {phaseText}
         </h3>
 
-        <p className="text-xs text-neutral-400 font-mono tracking-wider uppercase mb-3">
-          Zero-Trace Cleanse in Progress
+        <p className="text-xs text-neutral-400 leading-relaxed mb-4 transition-all duration-700">
+          {phaseSubText}
         </p>
 
-        <span className="text-[10px] text-neutral-500 hover:text-neutral-400 transition-colors">
+        {/* 5-Second Meditative Release Progress Line */}
+        <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mb-3">
+          <div className="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-cyan-400 rounded-full animate-release-progress" />
+        </div>
+
+        <span className="text-[10px] font-mono text-neutral-500 hover:text-neutral-400 transition-colors">
           Click anywhere to skip
         </span>
       </div>

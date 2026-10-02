@@ -150,3 +150,13 @@ body {
   animation: zen-reveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes release-progress {
+  0% { width: 0%; opacity: 0.6; }
+  90% { width: 95%; opacity: 1; }
+  100% { width: 100%; opacity: 0.8; }
+}
+
+.animate-release-progress {
+  animation: release-progress 5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
