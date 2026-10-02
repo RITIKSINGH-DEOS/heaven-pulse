@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { InsecurityCategory, PeerResonanceCard, ClarityReport } from '../lib/types';
 import { generateClarityReport } from '../lib/distortion-engine';
+import { getPeersByCategory } from '../lib/mock-peers';
 import { Header } from '../components/Header';
 import { SanctuaryIntake } from '../components/SanctuaryIntake';
 import { ResonanceHub } from '../components/ResonanceHub';
@@ -19,6 +20,7 @@ export default function Home() {
   const [selectedPeer, setSelectedPeer] = useState<PeerResonanceCard | null>(null);
   const [clarityReport, setClarityReport] = useState<ClarityReport | null>(null);
   const [sessionId, setSessionId] = useState<string>('');
+  const [isVolunteerListener, setIsVolunteerListener] = useState<boolean>(false);
 
   // Generate ephemeral session ID in memory
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function Home() {
   const handleIntakeSubmit = (category: InsecurityCategory, thought: string, directToClarity: boolean) => {
     setSelectedCategory(category);
     setRawThought(thought);
+    setIsVolunteerListener(false);
 
     if (directToClarity) {
       // Direct Solo Pathway: Generate Clarity Report immediately
@@ -44,6 +47,7 @@ export default function Home() {
   // Handle Peer Selection from Hub
   const handleSelectPeer = (peer: PeerResonanceCard) => {
     setSelectedPeer(peer);
+    setIsVolunteerListener(false);
     setCurrentStep('empathy_bridge');
   };
 
@@ -61,11 +65,32 @@ export default function Home() {
     setCurrentStep('clarity_mirror');
   };
 
+  // Handle Listener Volunteer Mode (Enter directly to hold space for others)
+  const handleBeListener = (category: InsecurityCategory) => {
+    setSelectedCategory(category);
+    setRawThought('Holding space for a peer in this vulnerability domain.');
+    const peers = getPeersByCategory(category);
+    const chosenPeer = peers[0] || {
+      id: `peer-${category}-1`,
+      alias: 'StarlitFern',
+      category: category,
+      distilledStruggle: 'Holding space for live students.',
+      perspectiveGift: 'Listening with quiet presence.',
+      isOnline: true,
+      activeMinutesAgo: 1,
+      resonanceCount: 100,
+    };
+    setSelectedPeer(chosenPeer);
+    setIsVolunteerListener(true);
+    setCurrentStep('empathy_bridge');
+  };
+
   // Reset / Return to Sanctuary
   const handleReset = () => {
     setRawThought('');
     setSelectedPeer(null);
     setClarityReport(null);
+    setIsVolunteerListener(false);
     setCurrentStep('intake');
   };
 
@@ -85,7 +110,10 @@ export default function Home() {
       <main className="relative z-10 flex-1 flex flex-col justify-center py-6 sm:py-10">
         
         {currentStep === 'intake' && (
-          <SanctuaryIntake onSubmit={handleIntakeSubmit} />
+          <SanctuaryIntake 
+            onSubmit={handleIntakeSubmit} 
+            onBeListener={handleBeListener}
+          />
         )}
 
         {currentStep === 'resonance_hub' && (
@@ -102,8 +130,9 @@ export default function Home() {
           <EmpathyBridge
             peer={selectedPeer}
             userRawThought={rawThought}
+            isVolunteerListener={isVolunteerListener}
             onComplete={handleEmpathyComplete}
-            onBack={() => setCurrentStep('resonance_hub')}
+            onBack={() => setCurrentStep('intake')}
           />
         )}
 

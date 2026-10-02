@@ -7,17 +7,17 @@ import {
   ArrowLeft, 
   Send, 
   Clock, 
-  ShieldCheck, 
   Sparkles, 
   Lock, 
   ArrowRight,
-  Heart,
-  Flame
+  UserCheck,
+  Bot
 } from 'lucide-react';
 
 interface EmpathyBridgeProps {
   peer: PeerResonanceCard;
   userRawThought: string;
+  isVolunteerListener?: boolean;
   onComplete: (chatTranscript: string) => void;
   onBack: () => void;
 }
@@ -32,36 +32,164 @@ const EMPATHY_QUICK_DROPS = [
 export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
   peer,
   userRawThought,
+  isVolunteerListener = false,
   onComplete,
   onBack,
 }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes (300 seconds)
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
   const [isWarningPii, setIsWarningPii] = useState(false);
   const [isPeerTyping, setIsPeerTyping] = useState(false);
-  const chatBottomRef = useRef<HTMLDivElement | null>(null);
+  const [hasRealPeerOnline, setHasRealPeerOnline] = useState(false);
+  
+  // Dynamic anonymous role aliases assigned by server room
+  const [assignedAlias, setAssignedAlias] = useState<string>(isVolunteerListener ? 'StarlitFern' : 'CalmSeeker');
+  const [assignedPeerAlias, setAssignedPeerAlias] = useState<string>(isVolunteerListener ? 'CalmSeeker' : (peer?.alias || 'StarlitFern'));
 
-  // Initialize with system message & peer icebreaker
+  const hasRealPeerRef = useRef<boolean>(false);
+  const chatBottomRef = useRef<HTMLDivElement | null>(null);
+  const clientIdRef = useRef<string>('');
+  const roomIdRef = useRef<string>('');
+
+  // 1. Join Server Chamber & Setup Polling
   useEffect(() => {
-    const initialMessages: ChatMessage[] = [
+    const cId = 'client_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    clientIdRef.current = cId;
+
+    // Join Server Matchmaker Room
+    const joinRoom = async () => {
+      try {
+        const res = await fetch('/api/room', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'JOIN',
+            clientId: cId,
+            category: peer.category,
+            isVolunteer: isVolunteerListener,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          roomIdRef.current = data.roomId;
+          if (data.myAlias) setAssignedAlias(data.myAlias);
+          if (data.peerAlias) setAssignedPeerAlias(data.peerAlias);
+          if (data.isPeerOnline) {
+            hasRealPeerRef.current = true;
+            setHasRealPeerOnline(true);
+          }
+
+          // Initial populate
+          if (Array.isArray(data.messages) && data.messages.length > 0) {
+            syncMessagesFromServer(data.messages, cId, data.myAlias, data.peerAlias);
+          } else {
+            // Default initial message
+            setupDefaultGreeting(data.myAlias, data.peerAlias);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to join room:', err);
+        setupDefaultGreeting(assignedAlias, assignedPeerAlias);
+      }
+    };
+
+    joinRoom();
+
+    // 2. Poll server every 600ms for zero-config cross-tab / cross-device sync
+    const pollInterval = setInterval(async () => {
+      if (!roomIdRef.current && !cId) return;
+      try {
+        const url = `/api/room?roomId=${encodeURIComponent(roomIdRef.current)}&clientId=${encodeURIComponent(cId)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.success) {
+          if (data.myAlias) setAssignedAlias(data.myAlias);
+          if (data.peerAlias) setAssignedPeerAlias(data.peerAlias);
+
+          const peerNowOnline = Boolean(data.isPeerOnline);
+          hasRealPeerRef.current = peerNowOnline;
+          setHasRealPeerOnline(peerNowOnline);
+
+          if (Array.isArray(data.messages)) {
+            syncMessagesFromServer(data.messages, cId, data.myAlias, data.peerAlias);
+          }
+        }
+      } catch {}
+    }, 600);
+
+    return () => {
+      clearInterval(pollInterval);
+      // Notify chamber of exit
+      if (clientIdRef.current) {
+        fetch('/api/room', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'LEAVE',
+            clientId: clientIdRef.current,
+            roomId: roomIdRef.current,
+          }),
+        }).catch(() => {});
+      }
+    };
+  }, [peer.category, isVolunteerListener]);
+
+  const setupDefaultGreeting = (myA: string, peerA: string) => {
+    const greetingText = isVolunteerListener
+      ? `Welcome Volunteer. You are holding space for a peer struggling with: "${userRawThought.slice(0, 80)}${userRawThought.length > 80 ? '...' : ''}". Listen with pure empathy.`
+      : `Hello friend. I saw you were processing this burden: "${userRawThought.slice(0, 80)}${userRawThought.length > 80 ? '...' : ''}". I know this feeling so deeply.`;
+
+    setMessages([
       {
         id: 'sys-1',
         sender: 'system',
         senderAlias: 'Sanctuary Protocol',
-        text: 'You have entered an encrypted, zero-trace empathy chamber. No logs are saved. Be gentle, be truthful.',
+        text: 'You have entered an encrypted, zero-trace empathy chamber. No logs are saved. Waiting for a live peer, or converse with autonomous sanctuary reflection.',
         timestamp: Date.now(),
       },
       {
         id: 'peer-intro',
         sender: 'peer',
-        senderAlias: peer.alias,
-        text: `Hello friend. I saw you were processing this burden: "${userRawThought.slice(0, 80)}${userRawThought.length > 80 ? '...' : ''}". I know this feeling so deeply.`,
-        timestamp: Date.now() + 500,
+        senderAlias: peerA || peer.alias,
+        text: greetingText,
+        timestamp: Date.now() + 200,
       },
-    ];
-    setMessages(initialMessages);
-  }, [peer, userRawThought]);
+    ]);
+  };
+
+  const syncMessagesFromServer = (
+    serverMsgs: any[],
+    cId: string,
+    currentMyAlias?: string,
+    currentPeerAlias?: string
+  ) => {
+    const myA = currentMyAlias || assignedAlias;
+    const pA = currentPeerAlias || assignedPeerAlias;
+
+    const formatted: ChatMessage[] = serverMsgs.map((m: any) => {
+      if (m.senderId === 'system') {
+        return {
+          id: m.id,
+          sender: 'system',
+          senderAlias: m.senderAlias || 'Sanctuary Protocol',
+          text: m.text,
+          timestamp: m.timestamp,
+        };
+      }
+      const isSelf = m.senderId === cId;
+      return {
+        id: m.id,
+        sender: isSelf ? 'self' : 'peer',
+        senderAlias: isSelf ? `You (${myA})` : (m.senderAlias || pA),
+        text: m.text,
+        timestamp: m.timestamp,
+      };
+    });
+
+    setMessages(formatted);
+  };
 
   // 5-Minute Timer Countdown
   useEffect(() => {
@@ -89,7 +217,7 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  const handleSendMessage = (textToSend?: string) => {
+  const handleSendMessage = async (textToSend?: string) => {
     const content = textToSend || inputText;
     if (!content.trim()) return;
 
@@ -100,10 +228,11 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
       setTimeout(() => setIsWarningPii(false), 4000);
     }
 
+    const localMsgId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const userMsg: ChatMessage = {
-      id: `msg-${Date.now()}`,
+      id: localMsgId,
       sender: 'self',
-      senderAlias: 'You (CalmSeeker)',
+      senderAlias: `You (${assignedAlias})`,
       text: cleanText,
       timestamp: Date.now(),
     };
@@ -111,8 +240,27 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
 
-    // Trigger supportive peer response after brief natural delay
-    simulatePeerResponse(cleanText);
+    // Post to Server Room
+    try {
+      await fetch('/api/room', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'MESSAGE',
+          roomId: roomIdRef.current,
+          clientId: clientIdRef.current,
+          senderAlias: assignedAlias,
+          text: cleanText,
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to post message:', err);
+    }
+
+    // FALLBACK ONLY: If no live human peer is in room, activate empathetic simulation
+    if (!hasRealPeerRef.current && !hasRealPeerOnline) {
+      simulatePeerResponse(cleanText);
+    }
   };
 
   const simulatePeerResponse = (lastUserMsg: string) => {
@@ -131,12 +279,16 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
       const peerMsg: ChatMessage = {
         id: `peer-${Date.now()}`,
         sender: 'peer',
-        senderAlias: peer.alias,
+        senderAlias: `${assignedPeerAlias} (AI Companion)`,
         text: chosen,
         timestamp: Date.now(),
       };
       setMessages((prev) => [...prev, peerMsg]);
     }, 1800);
+  };
+
+  const triggerManualSimulation = () => {
+    simulatePeerResponse('Prompting reflection...');
   };
 
   const handleConclude = () => {
@@ -183,29 +335,61 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
       <div className="card-spotlight p-5 sm:p-7 flex flex-col h-[580px] justify-between relative overflow-hidden">
         
         {/* Chamber Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-3 border-b border-white/[0.08]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-neutral-900 border border-white/10 flex items-center justify-center text-emerald-400 shadow-inner">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-inner transition-colors ${
+              hasRealPeerOnline 
+                ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300' 
+                : 'bg-neutral-900 border-white/10 text-neutral-400'
+            }`}>
+              {hasRealPeerOnline ? (
+                <UserCheck className="w-5 h-5 text-emerald-400" />
+              ) : (
+                <Bot className="w-5 h-5 text-amber-400/80" />
+              )}
             </div>
+
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-white">
-                  Connected with {peer.alias}
+                  You ({assignedAlias}) &bull; Connected with {assignedPeerAlias}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40">
-                  Live Peer
+
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-all inline-flex items-center gap-1.5 ${
+                  hasRealPeerOnline 
+                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/80 shadow-[0_0_10px_rgba(52,211,153,0.35)]'
+                    : 'bg-amber-950/40 text-amber-300/90 border-amber-600/40'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${hasRealPeerOnline ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'}`} />
+                  {hasRealPeerOnline ? '🟢 Live Human Peer (Cross-Tab Active)' : '🟡 Lone Mode (AI Simulation Fallback)'}
                 </span>
               </div>
-              <p className="text-[11px] text-neutral-400">
-                Anonymous 1-on-1 • Encrypted Memory • Disintegrates upon exit
+
+              <p className="text-[11px] text-neutral-400 mt-0.5">
+                {hasRealPeerOnline 
+                  ? 'Real-time two-way human dialogue across tabs/devices • 100% Ephemeral'
+                  : 'Alone in sanctuary? An empathetic CBT peer will reflect with you. Open a 2nd tab to test live human match!'}
               </p>
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-500 font-mono">
-            <Lock className="w-3 h-3 text-emerald-400" />
-            <span>Zero-Knowledge Bridge</span>
+          <div className="flex items-center gap-2">
+            {!hasRealPeerOnline && (
+              <button
+                type="button"
+                onClick={triggerManualSimulation}
+                className="text-[10px] px-2.5 py-1 rounded bg-amber-950/40 hover:bg-amber-900/60 text-amber-300 border border-amber-600/30 transition-colors flex items-center gap-1 cursor-pointer"
+                title="Test AI Peer Response while alone in chamber"
+              >
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                <span>Simulate Peer</span>
+              </button>
+            )}
+
+            <div className="hidden md:flex items-center gap-1 text-[11px] text-neutral-500 font-mono">
+              <Lock className="w-3 h-3 text-emerald-400" />
+              <span>Zero-Trace</span>
+            </div>
           </div>
         </div>
 
@@ -246,8 +430,8 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
 
           {/* Typing indicator */}
           {isPeerTyping && (
-            <div className="flex items-center gap-2 text-xs text-neutral-500 italic pl-1 animate-pulse">
-              <span>{peer.alias} is typing words of perspective...</span>
+            <div className="flex items-center gap-2 text-xs text-neutral-400 italic pl-1 animate-pulse">
+              <span>{assignedPeerAlias} is typing words of perspective...</span>
             </div>
           )}
 
@@ -285,7 +469,7 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder={`Speak honestly with ${peer.alias}... (zero judgment)`}
+            placeholder={`Speak honestly with ${assignedPeerAlias}... (zero judgment)`}
             className="flex-1 input-spotlight px-4 py-2.5 text-xs sm:text-sm placeholder:text-neutral-600"
           />
           <button

@@ -19,6 +19,7 @@ import {
 
 interface SanctuaryIntakeProps {
   onSubmit: (category: InsecurityCategory, rawThought: string, directToClarity: boolean) => void;
+  onBeListener?: (category: InsecurityCategory) => void;
 }
 
 const SAMPLE_THOUGHTS: Record<InsecurityCategory, string> = {
@@ -28,10 +29,11 @@ const SAMPLE_THOUGHTS: Record<InsecurityCategory, string> = {
   belonging_relationships: 'I feel completely disconnected from my friends, like I would not be missed if I faded away.',
 };
 
-export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) => {
+export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit, onBeListener }) => {
   const [selectedCategory, setSelectedCategory] = useState<InsecurityCategory>('impostor_career');
   const [rawThought, setRawThought] = useState('');
   const [safetyAlert, setSafetyAlert] = useState<string | null>(null);
+  const [intakeMode, setIntakeMode] = useState<'vent' | 'listen'>('vent');
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
@@ -60,7 +62,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
     <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-8 sm:py-14 animate-fade-in">
       
       {/* Hero Title Section */}
-      <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
+      <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
         <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white mb-5 leading-[1.12]">
           Deconstructing Insecurity, <br />
           <span className="text-neutral-300">Empowering Minds</span>
@@ -69,6 +71,32 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
           HeavenPulse helps students and individuals dismantle paralyzing self-doubt through 
           clinical CBT deconstruction, zero-knowledge privacy, and real-time anonymous peer solidarity.
         </p>
+
+        {/* Dual Mode Switcher (Seek Support vs Offer Support) */}
+        <div className="inline-flex items-center p-1 rounded-xl bg-neutral-900/90 border border-white/10 mt-6 shadow-inner">
+          <button
+            type="button"
+            onClick={() => setIntakeMode('vent')}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              intakeMode === 'vent'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            I Need Support (Seeker)
+          </button>
+          <button
+            type="button"
+            onClick={() => setIntakeMode('listen')}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+              intakeMode === 'listen'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            I Want to Listen (Peer Volunteer)
+          </button>
+        </div>
       </div>
 
       {/* Main Centerpiece Card */}
@@ -77,9 +105,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
         {/* Subtle Card Header */}
         <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.08]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className={`w-2 h-2 rounded-full ${intakeMode === 'listen' ? 'bg-indigo-400' : 'bg-emerald-400'}`} />
             <span className="text-xs font-medium text-neutral-300">
-              Anonymous Session
+              {intakeMode === 'listen' ? 'Empathy Volunteer Chamber' : 'Anonymous Decompression'}
             </span>
           </div>
 
@@ -91,7 +119,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
         {/* Domain Selection Grid */}
         <div className="mb-6">
           <label className="block text-xs font-medium text-neutral-400 mb-2.5">
-            What is weighing on your mind?
+            {intakeMode === 'listen' 
+              ? 'Which topic do you want to hold space for?' 
+              : 'What is weighing on your mind?'}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {INSECURITY_CATEGORIES.map((cat) => {
@@ -103,7 +133,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-3.5 py-3 rounded-xl text-center sm:text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-neutral-800/90 border-emerald-500/60 text-white shadow-md'
+                      ? intakeMode === 'listen'
+                        ? 'bg-neutral-800/90 border-indigo-500/60 text-white shadow-md'
+                        : 'bg-neutral-800/90 border-emerald-500/60 text-white shadow-md'
                       : 'bg-neutral-900/60 border-white/[0.08] text-neutral-400 hover:text-white hover:bg-neutral-800/50'
                   } border`}
                 >
@@ -116,72 +148,106 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
           </div>
         </div>
 
-        {/* Step 2: Input Field */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-medium text-neutral-400">
-              Share your thought honestly
-            </label>
-            <button
-              type="button"
-              onClick={() => handleUseSample(selectedCategory)}
-              className="text-xs text-neutral-400 hover:text-emerald-400 transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <Sparkles className="w-3 h-3 text-emerald-400" />
-              <span>Fill sample</span>
-            </button>
-          </div>
+        {/* Mode A: Seeker Input Field */}
+        {intakeMode === 'vent' ? (
+          <>
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-medium text-neutral-400">
+                  Share your thought honestly
+                </label>
+                <button
+                  type="button"
+                  onClick={() => handleUseSample(selectedCategory)}
+                  className="text-xs text-neutral-400 hover:text-emerald-400 transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Sparkles className="w-3 h-3 text-emerald-400" />
+                  <span>Fill sample</span>
+                </button>
+              </div>
 
-          <textarea
-            value={rawThought}
-            onChange={handleTextChange}
-            rows={4}
-            placeholder="What's bothering you? (e.g. 'I feel like I'm falling behind and everyone else has it together...')"
-            className="w-full input-spotlight p-4 text-sm leading-relaxed placeholder:text-neutral-600 rounded-xl"
-          />
-        </div>
+              <textarea
+                value={rawThought}
+                onChange={handleTextChange}
+                rows={4}
+                placeholder="What's bothering you? (e.g. 'I feel like I'm falling behind and everyone else has it together...')"
+                className="w-full input-spotlight p-4 text-sm leading-relaxed placeholder:text-neutral-600 rounded-xl"
+              />
+            </div>
 
-        {/* Safety Warning (If triggered) */}
-        {safetyAlert && (
-          <div className="mb-6 p-4 rounded-xl bg-amber-950/40 border border-amber-600/30 flex items-start gap-3 text-amber-200 animate-fade-in">
-            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-            <div className="text-xs leading-relaxed">
-              <span className="font-semibold block text-amber-300 mb-0.5">Compassionate Support Available</span>
-              {safetyAlert} 
-              <span className="block mt-1 font-medium text-white">Call or Text 988 anytime.</span>
+            {/* Safety Warning (If triggered) */}
+            {safetyAlert && (
+              <div className="mb-6 p-4 rounded-xl bg-amber-950/40 border border-amber-600/30 flex items-start gap-3 text-amber-200 animate-fade-in">
+                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div className="text-xs leading-relaxed">
+                  <span className="font-semibold block text-amber-300 mb-0.5">Compassionate Support Available</span>
+                  {safetyAlert} 
+                  <span className="block mt-1 font-medium text-white">Call or Text 988 anytime.</span>
+                </div>
+              </div>
+            )}
+
+            {/* Bottom Actions Row */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/[0.08]">
+              <span className="text-xs text-neutral-500 hidden sm:inline">
+                100% Client-side • Never saved anywhere
+              </span>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  type="button"
+                  disabled={!rawThought.trim()}
+                  onClick={() => handleProceed(true)}
+                  className="flex-1 sm:flex-initial px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 text-neutral-300 hover:text-white border border-white/10 text-xs font-medium transition-colors cursor-pointer"
+                >
+                  Reflect Solo
+                </button>
+
+                <button
+                  type="button"
+                  disabled={!rawThought.trim()}
+                  onClick={() => handleProceed(false)}
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white font-medium text-xs transition-all shadow-sm cursor-pointer"
+                >
+                  <span>Connect with Peers</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Mode B: Volunteer Listener Preview & Direct Join */
+          <div className="animate-fade-in">
+            <div className="p-5 rounded-2xl bg-indigo-950/20 border border-indigo-500/30 mb-6">
+              <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                <HeartHandshake className="w-4 h-4" />
+                <span>Peer Volunteer Protocol</span>
+              </div>
+              <p className="text-xs sm:text-sm text-neutral-200 leading-relaxed mb-3">
+                You will enter as <strong className="text-indigo-300">StarlitFern (Live Peer)</strong>. When a student in this domain reaches out, you will listen with compassion, zero advice, and zero judgment.
+              </p>
+              <div className="text-[11px] text-neutral-400 font-mono flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Live listening chamber ready • 5-minute ephemeral session</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-white/[0.08]">
+              <span className="text-xs text-neutral-500">
+                You will be matched as the empathetic listener
+              </span>
+
+              <button
+                type="button"
+                onClick={() => onBeListener && onBeListener(selectedCategory)}
+                className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-all shadow-md shadow-indigo-950/50 cursor-pointer"
+              >
+                <span>Enter Chamber as Listener (StarlitFern)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         )}
-
-        {/* Bottom Actions Row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/[0.08]">
-          <span className="text-xs text-neutral-500 hidden sm:inline">
-            100% Client-side • Never saved anywhere
-          </span>
-
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            {/* Solo Direct Mode Button */}
-            <button
-              type="button"
-              disabled={!rawThought.trim()}
-              onClick={() => handleProceed(true)}
-              className="flex-1 sm:flex-initial px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 text-neutral-300 hover:text-white border border-white/10 text-xs font-medium transition-colors cursor-pointer"
-            >
-              Reflect Solo
-            </button>
-
-            {/* Peer Connection CTA */}
-            <button
-              type="button"
-              disabled={!rawThought.trim()}
-              onClick={() => handleProceed(false)}
-              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white font-medium text-xs transition-all shadow-sm cursor-pointer"
-            >
-              <span>Connect with Peers</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
 
       </div>
 
