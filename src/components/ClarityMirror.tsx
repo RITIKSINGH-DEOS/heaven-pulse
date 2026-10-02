@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ClarityReport } from '../lib/types';
+import { ClarityReport, InsecurityCategory } from '../lib/types';
 import { 
   Sparkles, 
   BrainCircuit, 
@@ -183,6 +183,44 @@ const SoothingReleaseAnimation: React.FC<{ onComplete: () => void }> = ({ onComp
     </div>
   );
 };
+
+// Personalized Uplifting Affirmation based on CalmSeeker's exact insecurity domain and thought
+function getCategoryQuote(category: InsecurityCategory, rawThought: string = ''): string {
+  const lower = rawThought.toLowerCase();
+
+  if (category === 'impostor_career') {
+    if (lower.includes('exam') || lower.includes('test') || lower.includes('grade') || lower.includes('marks')) {
+      return 'A single exam or metric never measures your intelligence or future. Your curiosity and quiet perseverance will take you far.';
+    }
+    if (lower.includes('interview') || lower.includes('job') || lower.includes('reject')) {
+      return 'Rejection is often protection and redirection. You don’t need to prove your worth to anyone; your value is already inherent.';
+    }
+    return 'You don’t have to know everything to belong in the room. You earned your seat here; trust your journey.';
+  }
+
+  if (category === 'body_image') {
+    if (lower.includes('ugly') || lower.includes('look') || lower.includes('face') || lower.includes('weight')) {
+      return 'Your body is a home carrying a rare, beautiful soul — not an ornament for the world to evaluate. Treat it with unconditional kindness.';
+    }
+    return 'Your worth was never defined by a reflection. The world needs the warmth of your heart, not an impossible standard.';
+  }
+
+  if (category === 'social_anxiety') {
+    if (lower.includes('awkward') || lower.includes('speak') || lower.includes('talk')) {
+      return 'You don’t need to be flawlessly charismatic to be deeply loved. Quiet sincerity is one of the rarest gifts in this world.';
+    }
+    return 'Everyone in the room is secretly wondering if they belong too. You are far safer than your anxious thoughts whisper.';
+  }
+
+  if (category === 'belonging_relationships') {
+    if (lower.includes('alone') || lower.includes('lonely') || lower.includes('friend')) {
+      return 'Loneliness is a passing chapter, not your destiny. The right people will cherish the quiet light you bring into the world.';
+    }
+    return 'Your presence leaves gentle ripples in ways you may never see. You matter far more than you realize.';
+  }
+
+  return 'You are allowed to be both a masterpiece and a work in progress simultaneously. Be gentle with your heart today.';
+}
 
 export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset }) => {
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
@@ -443,11 +481,22 @@ export const ClarityMirror: React.FC<ClarityMirrorProps> = ({ report, onReset })
             Your burden has been released.
           </h2>
 
-          <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-md mx-auto mb-7">
+          <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-md mx-auto mb-5">
             This thought has been purged from your device&apos;s memory. No traces exist anywhere. Walk forward with clarity.
           </p>
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-emerald-500/25 text-xs font-mono text-emerald-400 mb-7 shadow-inner">
+          {/* Issue-Specific Positive Affirmation Quote for CalmSeeker */}
+          <div className="mb-6 p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/25 max-w-md mx-auto text-center relative overflow-hidden shadow-inner">
+            <div className="flex items-center justify-center gap-1.5 text-emerald-400 text-[10px] font-mono uppercase tracking-wider mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Anchor of Perspective</span>
+            </div>
+            <p className="text-xs sm:text-sm font-medium text-emerald-100 italic leading-relaxed">
+              &ldquo;{getCategoryQuote(report.category, report.rawThought)}&rdquo;
+            </p>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-emerald-500/25 text-xs font-mono text-emerald-400 mb-6 shadow-inner">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>Memory Purged • 100% Private</span>
           </div>
