@@ -6,6 +6,7 @@ import { generateClarityReport } from '../lib/distortion-engine';
 import { Header } from '../components/Header';
 import { SanctuaryIntake } from '../components/SanctuaryIntake';
 import { ResonanceHub } from '../components/ResonanceHub';
+import { ParticleWaveBackground } from '../components/ParticleWaveBackground';
 
 type ScreenStep = 'intake' | 'resonance_hub' | 'empathy_bridge' | 'clarity_mirror';
 
@@ -64,6 +65,9 @@ export default function Home() {
       
       {/* Top Center Spotlight Cone (from Reference Images) */}
       <div className="spotlight-top" />
+
+      {/* 3D Flowing Particle Mesh & Embers (from Reference Image 2) */}
+      <ParticleWaveBackground />
 
       {/* Persistent Global Header */}
       <Header onReset={handleReset} />
