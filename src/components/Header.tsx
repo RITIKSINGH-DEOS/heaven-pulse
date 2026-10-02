@@ -33,21 +33,6 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-7 text-xs text-neutral-400">
-            <span className="hover:text-white transition-colors cursor-pointer">
-              Overview
-            </span>
-            <span className="hover:text-white transition-colors cursor-pointer">
-              CBT Architecture
-            </span>
-            <span className="hover:text-white transition-colors cursor-pointer">
-              Zero-Knowledge
-            </span>
-            <span className="hover:text-white transition-colors cursor-pointer">
-              Community Pulse
-            </span>
-          </nav>
 
           {/* Action Controls */}
           <div className="flex items-center gap-4 text-xs">
