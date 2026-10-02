@@ -1,69 +1,152 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { InsecurityCategory, PeerResonanceCard, ClarityReport } from '../lib/types';
+import { generateClarityReport } from '../lib/distortion-engine';
+import { Header } from '../components/Header';
+import { SanctuaryIntake } from '../components/SanctuaryIntake';
+import { ResonanceHub } from '../components/ResonanceHub';
+
+type ScreenStep = 'intake' | 'resonance_hub' | 'empathy_bridge' | 'clarity_mirror';
 
 export default function Home() {
+  const [currentStep, setCurrentStep] = useState<ScreenStep>('intake');
+  const [selectedCategory, setSelectedCategory] = useState<InsecurityCategory>('impostor_career');
+  const [rawThought, setRawThought] = useState<string>('');
+  const [selectedPeer, setSelectedPeer] = useState<PeerResonanceCard | null>(null);
+  const [clarityReport, setClarityReport] = useState<ClarityReport | null>(null);
+  const [sessionId, setSessionId] = useState<string>('');
+
+  // Generate ephemeral session ID in memory
+  useEffect(() => {
+    setSessionId('sess_' + Math.random().toString(36).substring(2, 10));
+  }, []);
+
+  // Handle Intake Submission
+  const handleIntakeSubmit = (category: InsecurityCategory, thought: string, directToClarity: boolean) => {
+    setSelectedCategory(category);
+    setRawThought(thought);
+
+    if (directToClarity) {
+      // Direct Solo Pathway: Generate Clarity Report immediately
+      const report = generateClarityReport(sessionId, thought, category);
+      setClarityReport(report);
+      setCurrentStep('clarity_mirror');
+    } else {
+      // Peer Pathway: Proceed to Live Resonance Hub
+      setCurrentStep('resonance_hub');
+    }
+  };
+
+  // Handle Peer Selection from Hub
+  const handleSelectPeer = (peer: PeerResonanceCard) => {
+    setSelectedPeer(peer);
+    setCurrentStep('empathy_bridge');
+  };
+
+  // Handle Direct Solo from Hub
+  const handleDirectSoloFromHub = () => {
+    const report = generateClarityReport(sessionId, rawThought, selectedCategory);
+    setClarityReport(report);
+    setCurrentStep('clarity_mirror');
+  };
+
+  // Reset / Return to Sanctuary
+  const handleReset = () => {
+    setRawThought('');
+    setSelectedPeer(null);
+    setClarityReport(null);
+    setCurrentStep('intake');
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="relative min-h-screen bg-black bg-grid-pattern text-neutral-100 flex flex-col justify-between selection:bg-neutral-800 selection:text-white">
+      
+      {/* Subtle Top Glow Accent */}
+      <div className="glow-accent" />
+
+      {/* Persistent Global Header */}
+      <Header onReset={handleReset} />
+
+      {/* Main Dynamic Viewport */}
+      <main className="relative z-10 flex-1 flex flex-col justify-center py-6 sm:py-10">
+        
+        {currentStep === 'intake' && (
+          <SanctuaryIntake onSubmit={handleIntakeSubmit} />
+        )}
+
+        {currentStep === 'resonance_hub' && (
+          <ResonanceHub
+            category={selectedCategory}
+            rawThought={rawThought}
+            onSelectPeer={handleSelectPeer}
+            onDirectToClarity={handleDirectSoloFromHub}
+            onBack={() => setCurrentStep('intake')}
+          />
+        )}
+
+        {/* Phase 3 Placeholders (Seamless transition readiness) */}
+        {currentStep === 'empathy_bridge' && (
+          <div className="max-w-2xl mx-auto px-4 text-center py-16 glass-panel rounded-3xl animate-fade-in">
+            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 block mb-2">
+              Ready for Phase 3
+            </span>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Empathy Bridge with {selectedPeer?.alias}
+            </h2>
+            <p className="text-sm text-slate-400 mb-6">
+              Safe 5-minute ephemeral chamber is being linked in Phase 3.
+            </p>
+            <button
+              onClick={handleDirectSoloFromHub}
+              className="px-6 py-3 rounded-xl bg-emerald-500 text-black font-semibold text-xs hover:bg-emerald-400 transition-colors"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Continue to The Clarity Mirror &rarr;
+            </button>
+          </div>
+        )}
+
+        {currentStep === 'clarity_mirror' && (
+          <div className="max-w-2xl mx-auto px-4 text-center py-16 glass-panel rounded-3xl animate-fade-in">
+            <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 block mb-2">
+              The Clarity Mirror
+            </span>
+            <h2 className="text-2xl font-bold text-white mb-3">
+              {clarityReport?.primaryDistortion.name}
+            </h2>
+            <p className="text-sm text-slate-300 italic mb-4 max-w-lg mx-auto">
+              &quot;{clarityReport?.objectiveReality}&quot;
+            </p>
+            <div className="text-xs text-slate-400 mb-6">
+              Full deconstruction & Release Ritual will be expanded in Phase 3.
+            </div>
+            <button
+              onClick={handleReset}
+              className="px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-colors"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+              &larr; Release & Return to Sanctuary
+            </button>
+          </div>
+        )}
+
       </main>
+
+      {/* Atmospheric Minimalist Footer */}
+      <footer className="relative z-10 border-t border-white/5 py-6 px-4 text-center text-xs text-slate-400">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            HeavenPulse • 100% Free Non-Profit Public Good for Student & Youth Wellness
+          </div>
+          <div className="flex items-center gap-4 text-slate-400">
+            <span>Client-Side Ephemeral Memory</span>
+            <span>•</span>
+            <span>Zero Tracking</span>
+            <span>•</span>
+            <span>WarriorHacks 2.0</span>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 }
