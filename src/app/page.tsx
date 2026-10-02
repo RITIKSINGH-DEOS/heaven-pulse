@@ -10,6 +10,7 @@ import { ResonanceHub } from '../components/ResonanceHub';
 import { EmpathyBridge } from '../components/EmpathyBridge';
 import { ClarityMirror } from '../components/ClarityMirror';
 import { ParticleWaveBackground } from '../components/ParticleWaveBackground';
+import { Heart } from 'lucide-react';
 
 type ScreenStep = 'intake' | 'resonance_hub' | 'empathy_bridge' | 'clarity_mirror';
 
@@ -151,7 +152,7 @@ export default function Home() {
           <div>
             HeavenPulse • 100% Free Non-Profit Public Good for Student & Youth Mental Wellness
           </div>
-          <div className="flex items-center gap-4 text-neutral-500 font-mono text-[11px]">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-4 text-neutral-500 font-mono text-[11px]">
             <span>Client-Side Ephemeral Memory</span>
             <span>•</span>
             <a 
@@ -164,6 +165,10 @@ export default function Home() {
             </a>
             <span>•</span>
             <span>WarriorHacks 2.0</span>
+            <span>•</span>
+            <span className="inline-flex items-center gap-1.5 text-neutral-300">
+              Made with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" /> by <span className="text-white font-medium">Ritik Singh</span>
+            </span>
           </div>
         </div>
       </footer>
