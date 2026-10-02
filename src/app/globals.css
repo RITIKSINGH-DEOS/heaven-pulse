@@ -8,71 +8,91 @@
 body {
   background-color: #000000;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, Helvetica, Arial, sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
-/* Subtle Architectural Dot Matrix Background */
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* 1. Exact Center-Top Spotlight Cone (from Reference Images 1, 4, 5) */
+.spotlight-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 480px;
+  background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 45%, transparent 80%);
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Luxury Linear / Novu Dark Card Styling */
-.card-linear {
-  background-color: #09090b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+/* 2. Micro Dot-Wave Textured Matrix (from Reference Images) */
+.bg-matrix-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* 3. Exact Card Style from Reference Images (Top metallic reflection sheen) */
+.card-spotlight {
+  background: #0d0d10;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
-.card-linear:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  transform: translateY(-1px);
+.card-spotlight:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  border-top-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
 }
 
-/* High-Contrast Input */
-.input-linear {
-  background-color: #0c0c0e;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* 4. Circular Icon Container (Exact match to Reference Image 2) */
+.icon-badge-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #15151b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* 5. Clean Input Box with Metallic Border */
+.input-spotlight {
+  background: #08080a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border-radius: 0.875rem;
   transition: all 0.2s ease;
 }
 
-.input-linear:focus {
+.input-spotlight:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.25);
-  background-color: #101014;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 20px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15), 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
-/* Subtle Gradient Glow Accent */
-.glow-accent {
-  position: absolute;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 350px;
-  background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.12) 0%, rgba(99, 102, 241, 0.05) 40%, transparent 70%);
-  pointer-events: none;
-  filter: blur(60px);
-  z-index: 0;
+/* 6. Exact CTA Button from Reference Image 3 & 5 */
+.btn-emerald-cta {
+  background-color: #1e4b38;
+  color: #34d399;
+  border: 1px solid #059669;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
-/* Minimalist Scrollbar */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #000000;
-}
-::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+.btn-emerald-cta:hover {
+  background-color: #059669;
+  color: #ffffff;
+  border-color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
 }

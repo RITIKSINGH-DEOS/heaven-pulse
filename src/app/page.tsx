@@ -60,10 +60,10 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black bg-grid-pattern text-neutral-100 flex flex-col justify-between selection:bg-neutral-800 selection:text-white">
+    <div className="relative min-h-screen bg-black bg-matrix-dots text-neutral-100 flex flex-col justify-between selection:bg-neutral-800 selection:text-white">
       
-      {/* Subtle Top Glow Accent */}
-      <div className="glow-accent" />
+      {/* Top Center Spotlight Cone (from Reference Images) */}
+      <div className="spotlight-top" />
 
       {/* Persistent Global Header */}
       <Header onReset={handleReset} />

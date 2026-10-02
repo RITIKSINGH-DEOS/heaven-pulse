@@ -3,7 +3,7 @@
 import React from 'react';
 import { InsecurityCategory, PeerResonanceCard } from '../lib/types';
 import { getPeersByCategory, INSECURITY_CATEGORIES } from '../lib/mock-peers';
-import { ArrowLeft, ArrowRight, MessageCircle, Sparkles, Compass } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MessageCircle, Sparkles, Compass, Users } from 'lucide-react';
 
 interface ResonanceHubProps {
   category: InsecurityCategory;
@@ -32,14 +32,14 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
         className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white mb-6 transition-colors cursor-pointer"
       >
         <ArrowLeft className="w-3.5 h-3.5" />
-        <span>Modify your thought</span>
+        <span>Return to Sanctuary</span>
       </button>
 
-      {/* Top Banner (Linear/Novu Style) */}
-      <div className="card-linear rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+      {/* Top Banner (Reference Image 1 Hero Style) */}
+      <div className="card-spotlight p-6 sm:p-8 mb-8 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-neutral-900 border border-neutral-800 text-[11px] font-mono uppercase text-emerald-400 mb-3">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-neutral-900 border border-white/10 text-[11px] font-mono uppercase text-emerald-400 mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
               <span>Resonance Pulse Active • {categoryMeta?.label}</span>
             </div>
@@ -51,7 +51,7 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-neutral-900/80 border border-neutral-800 shrink-0 sm:max-w-xs">
+          <div className="p-4 rounded-xl bg-black/60 border border-white/10 shrink-0 sm:max-w-xs">
             <span className="text-[10px] uppercase font-mono tracking-wider text-neutral-500 block mb-1">
               Your Unburdened Input
             </span>
@@ -65,10 +65,10 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
       {/* Solo Mode Shortcut Card */}
       <div 
         onClick={onDirectToClarity}
-        className="card-linear rounded-2xl p-5 mb-8 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group transition-all border border-neutral-800 hover:border-neutral-700"
+        className="card-spotlight p-5 mb-8 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 group transition-all"
       >
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform">
+          <div className="icon-badge-circle text-indigo-400 group-hover:scale-105 transition-transform">
             <Compass className="w-5 h-5" />
           </div>
           <div>
@@ -82,7 +82,7 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
         </div>
 
         <button 
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-900 text-neutral-200 group-hover:bg-white group-hover:text-black font-semibold text-xs transition-colors shrink-0 border border-neutral-700"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900 text-neutral-200 group-hover:bg-white group-hover:text-black font-semibold text-xs transition-colors shrink-0 border border-white/10"
         >
           <span>Solo Mode</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -90,23 +90,24 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
       </div>
 
       {/* Peer Grid Section Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-lg font-bold text-white tracking-tight">
-            Anonymous Peer Resonance Grid
+          <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+            <Users className="w-5 h-5 text-emerald-400" />
+            <span>Anonymous Peer Resonance Grid</span>
           </h3>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-neutral-400 mt-0.5">
             Select a verified peer to initiate a 5-minute ephemeral safe chat.
           </p>
         </div>
       </div>
 
-      {/* Peer Cards Grid */}
+      {/* Peer Cards Grid (Exact matching Reference Image 1 & 4 cards) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {peers.map((peer) => (
           <div
             key={peer.id}
-            className="card-linear rounded-2xl p-5 flex flex-col justify-between"
+            className="card-spotlight p-5 flex flex-col justify-between"
           >
             <div>
               {/* Card Header */}
@@ -116,12 +117,12 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
                     {peer.alias}
                   </span>
                   {peer.isOnline ? (
-                    <span className="flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-800/40">
+                    <span className="flex items-center gap-1.5 text-[11px] text-emerald-400 bg-[#1e4b38]/40 px-2 py-0.5 rounded border border-[#059669]/40 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       Online Now
                     </span>
                   ) : (
-                    <span className="text-[11px] text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded-full border border-neutral-800">
+                    <span className="text-[11px] text-neutral-500 bg-neutral-900 px-2 py-0.5 rounded border border-white/5 font-mono">
                       Active {peer.activeMinutesAgo}m ago
                     </span>
                   )}
@@ -143,7 +144,7 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
               </div>
 
               {/* Perspective Gift */}
-              <div className="p-3.5 rounded-xl bg-neutral-900/70 border border-neutral-800 mb-4">
+              <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.08] mb-4">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 flex items-center gap-1 mb-1">
                   <Sparkles className="w-3 h-3" />
                   Perspective Gift
@@ -157,7 +158,7 @@ export const ResonanceHub: React.FC<ResonanceHubProps> = ({
             {/* Connect Action Button */}
             <button
               onClick={() => onSelectPeer(peer)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-neutral-900 hover:bg-emerald-500 hover:text-black text-neutral-200 border border-neutral-800 font-semibold text-xs transition-all cursor-pointer shadow-sm"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-neutral-900 hover:bg-[#059669] hover:text-white text-neutral-200 border border-white/10 font-semibold text-xs transition-all cursor-pointer shadow-sm"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>Connect with {peer.alias} (5m Safe Chat)</span>
