@@ -107,7 +107,7 @@ export default function Home() {
       <Header onReset={handleReset} />
 
       {/* Main Dynamic Viewport */}
-      <main className="relative z-10 flex-1 flex flex-col justify-center py-6 sm:py-10">
+      <main className="relative z-10 flex-1 flex flex-col justify-center py-2 sm:py-4">
         
         {currentStep === 'intake' && (
           <SanctuaryIntake 

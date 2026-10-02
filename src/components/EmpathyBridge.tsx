@@ -11,7 +11,8 @@ import {
   Lock, 
   ArrowRight,
   UserCheck,
-  Bot
+  Bot,
+  HeartHandshake
 } from 'lucide-react';
 
 interface EmpathyBridgeProps {
@@ -47,10 +48,18 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
   const [assignedAlias, setAssignedAlias] = useState<string>(isVolunteerListener ? 'StarlitFern' : 'CalmSeeker');
   const [assignedPeerAlias, setAssignedPeerAlias] = useState<string>(isVolunteerListener ? 'CalmSeeker' : (peer?.alias || 'StarlitFern'));
 
+  // Adaptive Role Theme: Indigo/Purple for Listener (StarlitFern), Emerald Green for Seeker (CalmSeeker)
+  const isListener = assignedAlias === 'StarlitFern' || isVolunteerListener;
+
   const hasRealPeerRef = useRef<boolean>(false);
-  const chatBottomRef = useRef<HTMLDivElement | null>(null);
+  const chatScrollContainerRef = useRef<HTMLDivElement | null>(null);
   const clientIdRef = useRef<string>('');
   const roomIdRef = useRef<string>('');
+
+  // Keep window centered and prevent page-level jumping
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   // 1. Join Server Chamber & Setup Polling
   useEffect(() => {
@@ -206,9 +215,14 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-scroll chat
+  // Auto-scroll chat: Scroll ONLY inside the container, NEVER scroll the browser window
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTo({
+        top: chatScrollContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }, [messages, isPeerTyping]);
 
   const formatTimer = (seconds: number) => {
@@ -300,10 +314,10 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
   };
 
   return (
-    <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-6 sm:py-10 animate-fade-in">
+    <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-2 sm:py-6 animate-fade-in my-auto flex flex-col justify-center">
       
       {/* Top Bar with Timer & Safety Badges */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <button
           onClick={onBack}
           className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white transition-colors cursor-pointer"
@@ -314,9 +328,9 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
 
         {/* 5-Min Timer Pill */}
         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-white/10 text-xs font-mono">
-          <Clock className="w-3.5 h-3.5 text-emerald-400 animate-spin-slow" />
+          <Clock className={`w-3.5 h-3.5 animate-spin-slow ${isListener ? 'text-indigo-400' : 'text-emerald-400'}`} />
           <span className="text-neutral-300">Chamber Closes in:</span>
-          <span className={`font-bold ${timeLeft < 60 ? 'text-amber-400' : 'text-emerald-400'}`}>
+          <span className={`font-bold ${timeLeft < 60 ? 'text-amber-400' : (isListener ? 'text-indigo-400' : 'text-emerald-400')}`}>
             {formatTimer(timeLeft)}
           </span>
         </div>
@@ -332,17 +346,25 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
       </div>
 
       {/* Main Chat Chamber Card */}
-      <div className="card-spotlight p-5 sm:p-7 flex flex-col h-[580px] justify-between relative overflow-hidden">
+      <div className={`card-spotlight p-4 sm:p-6 flex flex-col h-[520px] sm:h-[560px] max-h-[74vh] justify-between relative overflow-hidden border-t-2 ${
+        isListener 
+          ? 'border-t-indigo-500/70 shadow-[0_-8px_30px_rgba(99,102,241,0.18)]' 
+          : 'border-t-emerald-500/70 shadow-[0_-8px_30px_rgba(52,211,153,0.18)]'
+      }`}>
         
         {/* Chamber Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-3 border-b border-white/[0.08]">
           <div className="flex items-center gap-3">
             <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-inner transition-colors ${
-              hasRealPeerOnline 
-                ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300' 
-                : 'bg-neutral-900 border-white/10 text-neutral-400'
+              isListener
+                ? 'bg-indigo-950/70 border-indigo-500/50 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.25)]'
+                : (hasRealPeerOnline 
+                    ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.25)]' 
+                    : 'bg-neutral-900 border-white/10 text-neutral-400')
             }`}>
-              {hasRealPeerOnline ? (
+              {isListener ? (
+                <HeartHandshake className="w-5 h-5 text-indigo-400" />
+              ) : hasRealPeerOnline ? (
                 <UserCheck className="w-5 h-5 text-emerald-400" />
               ) : (
                 <Bot className="w-5 h-5 text-amber-400/80" />
@@ -357,17 +379,27 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
 
                 <span className={`text-[10px] font-mono px-2 py-0.5 rounded border transition-all inline-flex items-center gap-1.5 ${
                   hasRealPeerOnline 
-                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/80 shadow-[0_0_10px_rgba(52,211,153,0.35)]'
+                    ? (isListener 
+                        ? 'bg-indigo-950/80 text-indigo-300 border-indigo-500/80 shadow-[0_0_12px_rgba(99,102,241,0.4)]'
+                        : 'bg-emerald-950/80 text-emerald-300 border-emerald-500/80 shadow-[0_0_10px_rgba(52,211,153,0.35)]')
                     : 'bg-amber-950/40 text-amber-300/90 border-amber-600/40'
                 }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${hasRealPeerOnline ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'}`} />
-                  {hasRealPeerOnline ? '🟢 Live Human Peer (Cross-Tab Active)' : '🟡 Lone Mode (AI Simulation Fallback)'}
+                  <span className={`w-1.5 h-1.5 rounded-full ${
+                    hasRealPeerOnline 
+                      ? (isListener ? 'bg-indigo-400 animate-ping' : 'bg-emerald-400 animate-ping')
+                      : 'bg-amber-400'
+                  }`} />
+                  {hasRealPeerOnline 
+                    ? (isListener ? '🟣 Live Peer Connected (Listener Space)' : '🟢 Live Human Peer (Cross-Tab Active)')
+                    : '🟡 Lone Mode (AI Simulation Fallback)'}
                 </span>
               </div>
 
               <p className="text-[11px] text-neutral-400 mt-0.5">
                 {hasRealPeerOnline 
-                  ? 'Real-time two-way human dialogue across tabs/devices • 100% Ephemeral'
+                  ? (isListener 
+                      ? 'Holding compassionate space for CalmSeeker • Zero judgment • 100% Ephemeral' 
+                      : 'Real-time two-way human dialogue across tabs/devices • 100% Ephemeral')
                   : 'Alone in sanctuary? An empathetic CBT peer will reflect with you. Open a 2nd tab to test live human match!'}
               </p>
             </div>
@@ -387,14 +419,17 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
             )}
 
             <div className="hidden md:flex items-center gap-1 text-[11px] text-neutral-500 font-mono">
-              <Lock className="w-3 h-3 text-emerald-400" />
+              <Lock className={`w-3 h-3 ${isListener ? 'text-indigo-400' : 'text-emerald-400'}`} />
               <span>Zero-Trace</span>
             </div>
           </div>
         </div>
 
         {/* Message Feed */}
-        <div className="flex-1 overflow-y-auto no-scrollbar py-4 space-y-3.5 pr-1">
+        <div 
+          ref={chatScrollContainerRef}
+          className="flex-1 overflow-y-auto no-scrollbar py-4 space-y-3.5 pr-1"
+        >
           {messages.map((msg) => {
             if (msg.sender === 'system') {
               return (
@@ -418,7 +453,9 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
                 <div
                   className={`max-w-[85%] sm:max-w-[70%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                     isSelf
-                      ? 'bg-neutral-800 text-white border border-white/15 rounded-tr-sm shadow-md'
+                      ? (isListener 
+                          ? 'bg-indigo-950/70 text-indigo-50 border border-indigo-500/40 rounded-tr-sm shadow-md'
+                          : 'bg-neutral-800 text-white border border-white/15 rounded-tr-sm shadow-md')
                       : 'bg-[#15151c] text-neutral-200 border border-white/10 rounded-tl-sm shadow-inner'
                   }`}
                 >
@@ -430,12 +467,12 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
 
           {/* Typing indicator */}
           {isPeerTyping && (
-            <div className="flex items-center gap-2 text-xs text-neutral-400 italic pl-1 animate-pulse">
+            <div className={`flex items-center gap-2 text-xs italic pl-1 animate-pulse ${
+              isListener ? 'text-indigo-400' : 'text-emerald-400'
+            }`}>
               <span>{assignedPeerAlias} is typing words of perspective...</span>
             </div>
           )}
-
-          <div ref={chatBottomRef} />
         </div>
 
         {/* PII Alert (If triggered) */}
@@ -455,7 +492,9 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
               key={idx}
               type="button"
               onClick={() => handleSendMessage(drop)}
-              className="text-[11px] px-3 py-1.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-white border border-white/10 whitespace-nowrap transition-colors shrink-0 cursor-pointer shadow-sm"
+              className={`text-[11px] px-3 py-1.5 rounded-full bg-neutral-900/90 text-neutral-300 hover:text-white border border-white/10 whitespace-nowrap transition-colors shrink-0 cursor-pointer shadow-sm ${
+                isListener ? 'hover:bg-indigo-950/60 hover:border-indigo-500/40 hover:text-indigo-200' : 'hover:bg-neutral-800'
+              }`}
             >
               {drop}
             </button>
@@ -469,14 +508,24 @@ export const EmpathyBridge: React.FC<EmpathyBridgeProps> = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder={`Speak honestly with ${assignedPeerAlias}... (zero judgment)`}
-            className="flex-1 input-spotlight px-4 py-2.5 text-xs sm:text-sm placeholder:text-neutral-600"
+            placeholder={
+              isListener
+                ? `Listen & offer quiet solidarity to ${assignedPeerAlias}... (zero advice, pure presence)`
+                : `Speak honestly with ${assignedPeerAlias}... (zero judgment)`
+            }
+            className={`flex-1 input-spotlight px-4 py-2.5 text-xs sm:text-sm placeholder:text-neutral-600 transition-colors ${
+              isListener ? 'focus:border-indigo-500/60' : 'focus:border-emerald-500/60'
+            }`}
           />
           <button
             type="button"
             onClick={() => handleSendMessage()}
             disabled={!inputText.trim()}
-            className="p-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 text-black font-semibold transition-all cursor-pointer shadow-sm"
+            className={`p-2.5 rounded-lg font-semibold transition-all cursor-pointer shadow-sm ${
+              isListener 
+                ? 'bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white shadow-md shadow-indigo-950/50'
+                : 'bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 text-black shadow-md shadow-emerald-950/50'
+            }`}
           >
             <Send className="w-4 h-4" />
           </button>
