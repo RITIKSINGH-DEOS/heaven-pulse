@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HeavenPulse | Cognitive Sanctuary for Youth & Students",
+  title: "HeavenPulse",
   description: "Anonymous peer resonance and cognitive distortion reframing for student mental wellness.",
 };
 
