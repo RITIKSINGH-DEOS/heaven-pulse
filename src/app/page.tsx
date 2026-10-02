@@ -154,7 +154,14 @@ export default function Home() {
           <div className="flex items-center gap-4 text-neutral-500 font-mono text-[11px]">
             <span>Client-Side Ephemeral Memory</span>
             <span>•</span>
-            <span>Zero Tracking</span>
+            <a 
+              href="https://github.com/RITIKSINGH-DEOS/heaven-pulse"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-neutral-300 transition-colors underline underline-offset-2"
+            >
+              GitHub Source
+            </a>
             <span>•</span>
             <span>WarriorHacks 2.0</span>
           </div>
