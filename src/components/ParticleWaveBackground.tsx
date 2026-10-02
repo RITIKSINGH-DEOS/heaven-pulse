@@ -23,13 +23,13 @@ export const ParticleWaveBackground: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // Wave parameters (Exact match to 3D particle mesh in reference image)
+    // Wave parameters (Ultra-clean subtle spacing)
     const cols = 55;
     const rows = 35;
     const xSpacing = width > 1200 ? 32 : 24;
     const zSpacing = 28;
 
-    // Scattered glowing amber embers (from reference image)
+    // Scattered glowing amber embers (Very gentle, slow floating)
     interface Ember {
       x: number;
       y: number;
@@ -40,14 +40,14 @@ export const ParticleWaveBackground: React.FC = () => {
       color: string;
     }
 
-    const embers: Ember[] = Array.from({ length: 35 }, () => ({
+    const embers: Ember[] = Array.from({ length: 24 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2 + 1,
-      speedY: -(Math.random() * 0.4 + 0.15),
-      speedX: (Math.random() - 0.5) * 0.2,
-      alpha: Math.random() * 0.7 + 0.3,
-      color: Math.random() > 0.3 ? '#f97316' : '#10b981', // amber & emerald sparks
+      size: Math.random() * 1.5 + 0.8,
+      speedY: -(Math.random() * 0.12 + 0.04), // 4x slower floating
+      speedX: (Math.random() - 0.5) * 0.05,
+      alpha: Math.random() * 0.4 + 0.2, // much softer glow
+      color: Math.random() > 0.4 ? '#f97316' : '#10b981',
     }));
 
     let step = 0;
@@ -61,27 +61,24 @@ export const ParticleWaveBackground: React.FC = () => {
 
       for (let ix = 0; ix < cols; ix++) {
         for (let iz = 0; iz < rows; iz++) {
-          // Perspective projection math
           const xPos = (ix - cols / 2) * xSpacing;
           const zPos = (iz - rows / 2) * zSpacing + 500;
 
-          // Multi-frequency wave calculation
-          const wave1 = Math.sin((ix * 0.2) + step * 0.03) * 35;
-          const wave2 = Math.cos((iz * 0.25) + step * 0.02) * 45;
-          const wave3 = Math.sin(((ix + iz) * 0.12) + step * 0.015) * 25;
+          // Gentle sine wave calculation (slowed down)
+          const wave1 = Math.sin((ix * 0.18) + step * 0.008) * 30;
+          const wave2 = Math.cos((iz * 0.22) + step * 0.006) * 35;
+          const wave3 = Math.sin(((ix + iz) * 0.1) + step * 0.004) * 20;
           const yPos = wave1 + wave2 + wave3;
 
-          // 3D to 2D projection
           const fov = 450;
           const scale = fov / (fov + zPos);
           const screenX = centerX + xPos * scale;
           const screenY = centerY + yPos * scale + (zPos * 0.35);
 
           if (scale > 0 && screenX >= 0 && screenX <= width && screenY >= 0 && screenY <= height) {
-            // Depth shading: closer points are brighter
-            const depthFactor = Math.max(0.1, Math.min(1, scale * 1.6));
-            const pointAlpha = depthFactor * 0.65;
-            const pointSize = Math.max(0.8, scale * 2.8);
+            const depthFactor = Math.max(0.15, Math.min(0.8, scale * 1.1));
+            const pointAlpha = depthFactor * 0.75;
+            const pointSize = Math.max(0.9, scale * 2.3);
 
             ctx.beginPath();
             ctx.arc(screenX, screenY, pointSize, 0, Math.PI * 2);
@@ -91,7 +88,7 @@ export const ParticleWaveBackground: React.FC = () => {
         }
       }
 
-      // 2. Render Ambient Floating Embers (orange & emerald glowing specks)
+      // 2. Render Ambient Floating Embers
       embers.forEach((ember) => {
         ember.y += ember.speedY;
         ember.x += ember.speedX;
@@ -106,13 +103,13 @@ export const ParticleWaveBackground: React.FC = () => {
         ctx.fillStyle = ember.color;
         ctx.shadowColor = ember.color;
         ctx.shadowBlur = 8;
-        ctx.globalAlpha = ember.alpha;
+        ctx.globalAlpha = ember.alpha * 1.2;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
       });
 
-      step += 0.8;
+      step += 0.22; // smooth tranquil movement
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -127,7 +124,7 @@ export const ParticleWaveBackground: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-70"
+      className="fixed inset-0 pointer-events-none z-0 opacity-35 transition-opacity duration-300"
       style={{ mixBlendMode: 'screen' }}
     />
   );
