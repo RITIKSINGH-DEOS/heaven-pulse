@@ -75,27 +75,25 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
       <div className="card-spotlight p-6 sm:p-9 mb-16 relative overflow-hidden">
         
         {/* Subtle Card Header */}
-        <div className="flex items-center justify-between pb-5 mb-6 border-b border-white/[0.08]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-md bg-neutral-900 border border-white/10 flex items-center justify-center text-emerald-400">
-              <Lock className="w-3 h-3" />
-            </div>
-            <span className="text-xs font-semibold text-white tracking-wide">
-              Anonymous Decompression Session
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/[0.08]">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="text-xs font-medium text-neutral-300">
+              Anonymous Session
             </span>
           </div>
 
-          <span className="text-[11px] font-mono text-neutral-500 bg-white/5 px-2 py-0.5 rounded border border-white/5">
-            Session Memory: Client Only
+          <span className="text-[11px] text-neutral-500 font-mono">
+            Zero logs • Disappears on exit
           </span>
         </div>
 
         {/* Domain Selection Grid */}
         <div className="mb-6">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
-            Select Domain of Vulnerability
+          <label className="block text-xs font-medium text-neutral-400 mb-2.5">
+            What is weighing on your mind?
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {INSECURITY_CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat.id;
               return (
@@ -103,40 +101,34 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
                   key={cat.id}
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`p-4 rounded-xl text-left transition-all ${
+                  className={`px-3.5 py-3 rounded-xl text-center sm:text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#15151c] border-white/30 text-white shadow-lg shadow-black/80'
-                      : 'bg-[#0a0a0d] border-white/[0.07] text-neutral-400 hover:bg-[#121217] hover:text-neutral-200'
-                  } border cursor-pointer`}
+                      ? 'bg-neutral-800/90 border-emerald-500/60 text-white shadow-md'
+                      : 'bg-neutral-900/60 border-white/[0.08] text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+                  } border`}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-semibold">{cat.label}</span>
-                    {isSelected && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                    )}
+                  <div className="text-xs font-medium leading-snug">
+                    {cat.label}
                   </div>
-                  <p className="text-[11px] text-neutral-400 line-clamp-1 leading-normal">
-                    {cat.shortDesc}
-                  </p>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Step 2: Unfiltered Input Field */}
+        {/* Step 2: Input Field */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-2.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-              Your Raw, Unfiltered Inner Critic
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-xs font-medium text-neutral-400">
+              Share your thought honestly
             </label>
             <button
               type="button"
               onClick={() => handleUseSample(selectedCategory)}
-              className="text-xs text-neutral-400 hover:text-emerald-400 transition-colors flex items-center gap-1 cursor-pointer"
+              className="text-xs text-neutral-400 hover:text-emerald-400 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-3 h-3 text-emerald-400" />
-              <span>Use sample thought</span>
+              <span>Fill sample</span>
             </button>
           </div>
 
@@ -144,8 +136,8 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             value={rawThought}
             onChange={handleTextChange}
             rows={4}
-            placeholder="Type your authentic struggle... (e.g. 'I freeze in group meetings and worry everyone thinks I do not belong')"
-            className="w-full input-spotlight p-4 text-sm sm:text-base leading-relaxed placeholder:text-neutral-600 font-sans"
+            placeholder="What's bothering you? (e.g. 'I feel like I'm falling behind and everyone else has it together...')"
+            className="w-full input-spotlight p-4 text-sm leading-relaxed placeholder:text-neutral-600 rounded-xl"
           />
         </div>
 
@@ -163,9 +155,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
 
         {/* Bottom Actions Row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/[0.08]">
-          <div className="text-xs text-neutral-500 hidden sm:block">
-            <span>Zero database persistence • Instant client-side wipe</span>
-          </div>
+          <span className="text-xs text-neutral-500 hidden sm:inline">
+            100% Client-side • Never saved anywhere
+          </span>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
             {/* Solo Direct Mode Button */}
@@ -173,9 +165,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
               type="button"
               disabled={!rawThought.trim()}
               onClick={() => handleProceed(true)}
-              className="flex-1 sm:flex-initial px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 text-neutral-300 hover:text-white border border-white/10 text-xs font-semibold transition-colors cursor-pointer"
+              className="flex-1 sm:flex-initial px-4 py-2.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 disabled:opacity-30 text-neutral-300 hover:text-white border border-white/10 text-xs font-medium transition-colors cursor-pointer"
             >
-              Solo Clarity Mirror
+              Reflect Solo
             </button>
 
             {/* Peer Connection CTA */}
@@ -183,7 +175,7 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
               type="button"
               disabled={!rawThought.trim()}
               onClick={() => handleProceed(false)}
-              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#1e4b38] hover:bg-[#059669] disabled:opacity-30 text-[#34d399] hover:text-white border border-[#059669] font-semibold text-xs transition-all shadow-sm cursor-pointer"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 text-white font-medium text-xs transition-all shadow-sm cursor-pointer"
             >
               <span>Connect with Peers</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -212,9 +204,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             <div className="icon-badge-circle mb-4">
               <EyeOff className="w-5 h-5 text-neutral-300" />
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1.5">Zero-Knowledge Privacy</h3>
+            <h3 className="text-sm font-semibold text-white mb-1.5">100% Private & Anonymous</h3>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              No registration, no cookies, no tracking. Every session executes in client memory and vanishes upon close.
+              No signups, no cookies, no tracking. Your thoughts disappear the moment you close the tab.
             </p>
           </div>
 
@@ -223,9 +215,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             <div className="icon-badge-circle mb-4">
               <BrainCircuit className="w-5 h-5 text-neutral-300" />
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1.5">CBT Socratic Deconstruction</h3>
+            <h3 className="text-sm font-semibold text-white mb-1.5">CBT Thought Reframing</h3>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Scientific identification of cognitive distortions (Catastrophizing, Mind Reading, Spotlight Effect) with objective reality checks.
+              Detects overthinking patterns like catastrophizing and turns negative thoughts into balanced reality.
             </p>
           </div>
 
@@ -234,9 +226,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             <div className="icon-badge-circle mb-4">
               <HeartHandshake className="w-5 h-5 text-neutral-300" />
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1.5">Ephemeral 5-Min Empathy Bridge</h3>
+            <h3 className="text-sm font-semibold text-white mb-1.5">5-Min Peer Empathy Chat</h3>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Real-time 1-on-1 human connection with online peers battling the exact same challenge. Zero profiles, zero toxicity.
+              Connect anonymously with a student facing the same struggle. Quick, safe, and judgment-free.
             </p>
           </div>
 
@@ -245,9 +237,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             <div className="icon-badge-circle mb-4">
               <ShieldCheck className="w-5 h-5 text-neutral-300" />
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1.5">Deterministic Safety Air-Gap</h3>
+            <h3 className="text-sm font-semibold text-white mb-1.5">Built-in Safety Shield</h3>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Automated red-line crisis filters for 988 emergency escalation and PII contact redaction to eliminate harassment.
+              Blocks personal info (phone, handles) and automatically connects severe distress to 988 lifeline.
             </p>
           </div>
 
@@ -256,9 +248,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             <div className="icon-badge-circle mb-4">
               <Compass className="w-5 h-5 text-neutral-300" />
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1.5">Solo Clarity Mirror</h3>
+            <h3 className="text-sm font-semibold text-white mb-1.5">Solo Clarity Mode</h3>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Introvert-friendly instant resolution. Bypass peer interactions whenever you want pure, solitary cognitive clarity.
+              Prefer quiet reflection? Skip peer chat anytime and jump straight to personal thought deconstruction.
             </p>
           </div>
 
@@ -267,9 +259,9 @@ export const SanctuaryIntake: React.FC<SanctuaryIntakeProps> = ({ onSubmit }) =>
             <div className="icon-badge-circle mb-4">
               <Heart className="w-5 h-5 text-neutral-300" />
             </div>
-            <h3 className="text-sm font-semibold text-white mb-1.5">100% Free Non-Profit</h3>
+            <h3 className="text-sm font-semibold text-white mb-1.5">Free & Non-Profit</h3>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Built as an open digital public good for high school and university mental health support with zero commercial interest.
+              An open digital sanctuary created for student wellness. No ads, no paywalls, forever free.
             </p>
           </div>
 
