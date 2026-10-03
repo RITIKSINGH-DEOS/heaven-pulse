@@ -12,7 +12,7 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
 
   return (
     <>
-      <header className="relative z-30 w-full border-b border-white/[0.08] bg-black/90 backdrop-blur-md">
+      <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-white/[0.08] bg-black/85 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           
           {/* Brand Logo */}
@@ -73,9 +73,12 @@ export const Header: React.FC<HeaderProps> = ({ onReset }) => {
         </div>
       </header>
 
+      {/* Structural Spacer for Fixed Navbar */}
+      <div className="h-16 w-full shrink-0 pointer-events-none" aria-hidden="true" />
+
       {/* Crisis Modal */}
       {showCrisisModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in">
           <div className="relative w-full max-w-lg p-6 rounded-2xl card-spotlight text-white shadow-2xl">
             <button 
               onClick={() => setShowCrisisModal(false)}
